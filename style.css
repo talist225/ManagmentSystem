@@ -1,0 +1,251 @@
+body {
+  direction: rtl;
+  text-align: right;
+  background-color: #f8f9fa;
+  font-family: "Calibri";
+}
+.container {
+  width: 100%;
+}
+.task-item {
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  padding: 10px;
+  position: relative;
+  width: 100%;
+  cursor: move;
+}
+.priority-high {
+  border-left: 5px solid #dc3545;
+  background-color: #f8d7da;
+}
+.priority-medium {
+  border-left: 5px solid #ffc107;
+  background-color: #fff3cd;
+}
+.priority-low {
+  border-left: 5px solid #28a745;
+  background-color: #d4edda;
+}
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.form-group label {
+  flex: 1 1 100%;
+}
+.form-group input,
+.form-group select {
+  flex: 1 1 calc(50% - 10px);
+}
+.description-group {
+  display: none;
+  flex-direction: column;
+}
+.task-text {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.task-description {
+  margin-top: 10px;
+}
+.task-divider {
+  border-top: 1px solid #dee2e6;
+  margin: 10px 0;
+}
+.task-actions {
+  display: flex;
+  gap: 10px;
+}
+.task-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.column {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+.columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.banner {
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+}
+.animated-text {
+  display: inline-block;
+  padding-left: 15px;
+}
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.info-icon {
+  display: inline-block;
+  color: #007bff;
+  cursor: pointer;
+  position: relative;
+  margin-left: 10px;
+  font-size: 25px;
+}
+.info-icon:hover .info-content {
+  display: block;
+  font-size: 13px;
+}
+.info-content {
+  display: none;
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 200px;
+}
+.accordion-button {
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border: none;
+  outline: none;
+  width: 100%;
+  text-align: right;
+  padding: 10px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  font-size: 20px;
+  font-weight: bold;
+}
+.accordion-content {
+  display: none;
+  padding: 10px;
+  border-top: 1px solid rgb(66, 66, 66);
+}
+.accordion-content.show {
+  display: block;
+}
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.banner img {
+  width: 20%;
+  padding-right: 15px;
+}
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 250px;
+  background: #ebebec;
+  padding-top: 20px;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+.sidebar.collapsed {
+  transform: translateX(100%);
+}
+.sidebar a {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: black;
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+.sidebar a:hover {
+  transform: scale(1.1);
+  margin: 10px;
+}
+.sidebar .title {
+  color: black;
+  padding: 15px;
+  font-size: 30px;
+}
+.toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ebebec;
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  z-index: 1001;
+  border: 2px solid black;
+  font-weight: bold;
+}
+.toast {
+  visibility: hidden;
+  max-width: 50%;
+  margin: 0 auto;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  top: 30px;
+  font-size: 17px;
+  transform: translateX(-50%);
+}
+.toast.show {
+  visibility: visible;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@keyframes fadein {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+  to {
+    top: 30px;
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    top: 30px;
+    opacity: 1;
+  }
+  to {
+    top: 0;
+    opacity: 0;
+  }
+}
+.alert {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1050;
+  display: none;
+}
