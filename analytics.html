@@ -13,6 +13,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       body {
         direction: rtl;
@@ -69,7 +70,6 @@
         color: black;
         padding: 15px;
         font-size: 30px;
-        margin-top: 50px;
       }
       .toggle-btn {
         position: fixed;
@@ -84,14 +84,14 @@
         border: 2px solid black;
         font-weight: bold;
       }
-      .footer {
-        position: static;
-        left: 0;
-        bottom: 0;
-        margin-top: 100px;
-        width: 100%;
-        background-color: #ebebec;
+      .chart-container {
+        width: 45%;
+        display: inline-block;
+        margin: 10px;
+      }
+      .chart-text {
         text-align: center;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -104,9 +104,9 @@
       <hr />
       <a href="requests.html">פניות</a>
       <hr />
-      <a href="#history" onclick="showHistory()">היסטוריה</a>
+      <a href="history.html" onclick="showHistory()">היסטוריה</a>
       <hr />
-      <a href="#alerts" onclick="showAlerts()">היסטוריית התראות</a>
+      <a href="alerts.html" onclick="showAlerts()">היסטוריית התראות</a>
       <hr />
       <a href="analytics.html">אנליטיקה</a>
     </div>
@@ -117,7 +117,33 @@
         <h2 class="animated-text">מחלקת הנדסה</h2>
       </div>
       <h1 class="mb-4">אנליטיקה</h1>
-      <div>בדיקה</div>
+      <div class="chart-container">
+        <canvas id="tasksChart"></canvas>
+        <div class="chart-text">
+          <p>
+            גרף זה מציג את מספר הפניות והמשימות שנפתחו במהלך כל חודש קלנדרי.
+            ניתן לראות את התפלגות הפניות והמשימות לאורך השנה.
+          </p>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+        <div class="chart-text">
+          <p>
+            גרף זה מציג את הסטטוס של הפניות והמשימות. ניתן לראות כמה פניות
+            ומשימות הסתיימו בהצלחה, כמה נמחקו וכמה עדיין פתוחות ולא טופלו.
+          </p>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="completionTimeChart"></canvas>
+        <div class="chart-text">
+          <p>
+            גרף זה מציג את זמן הטיפול בפניות ובמשימות (בימים). ניתן לראות כמה
+            זמן לקח לכל פניה או משימה להיות מטופלת עד שסיימתי אותה.
+          </p>
+        </div>
+      </div>
     </div>
     <!-- Modal היסטוריה -->
     <div
@@ -215,9 +241,152 @@
         );
         alertsModal.show();
       }
+
+      // פונקציה לחישוב נתונים מה-localStorage
+      function calculateData() {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        const deletedTasks =
+          JSON.parse(localStorage.getItem("deletedTasks")) || [];
+
+        const monthlyData = Array(12).fill(0);
+        const statusData = { completed: 0, deleted: 0, open: 0 };
+        const completionTimes = [];
+
+        tasks.forEach((task) => {
+          const month = new Date(task.startDate).getMonth();
+          monthlyData[month]++;
+          if (task.completionDate) {
+            statusData.completed++;
+            const startDate = new Date(task.startDate);
+            const completionDate = new Date(task.completionDate);
+            const timeDiff =
+              (completionDate - startDate) / (1000 * 60 * 60 * 24);
+            completionTimes.push(timeDiff);
+          } else {
+            statusData.open++;
+          }
+        });
+
+        deletedTasks.forEach((task) => {
+          statusData.deleted++;
+        });
+
+        return { monthlyData, statusData, completionTimes };
+      }
+
+      // נתונים מה-localStorage
+      const { monthlyData, statusData, completionTimes } = calculateData();
+
+      const tasksData = {
+        labels: [
+          "ינואר",
+          "פברואר",
+          "מרץ",
+          "אפריל",
+          "מאי",
+          "יוני",
+          "יולי",
+          "אוגוסט",
+          "ספטמבר",
+          "אוקטובר",
+          "נובמבר",
+          "דצמבר",
+        ],
+        datasets: [
+          {
+            label: "פניות ומשימות שנפתחו",
+            data: monthlyData,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const statusChartData = {
+        labels: ["הסתיימו בהצלחה", "נמחקו", "פתוחות ולא טופלו"],
+        datasets: [
+          {
+            label: "סטטוס פניות ומשימות",
+            data: [statusData.completed, statusData.deleted, statusData.open],
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+            ],
+            borderColor: [
+              "rgba(75, 192, 192, 1)",
+              "rgba(255, 99, 132, 1)",
+              "rgba(255, 206, 86, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      const completionTimeData = {
+        labels: completionTimes.map((_, index) => `פניה ${index + 1}`),
+        datasets: [
+          {
+            label: "זמן טיפול בפניות ומשימות (ימים)",
+            data: completionTimes,
+            backgroundColor: "rgba(153, 102, 255, 0.2)",
+            borderColor: "rgba(153, 102, 255, 1)",
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      window.onload = function () {
+        const ctx1 = document.getElementById("tasksChart").getContext("2d");
+        const tasksChart = new Chart(ctx1, {
+          type: "bar",
+          data: tasksData,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+
+        const ctx2 = document.getElementById("statusChart").getContext("2d");
+        const statusChart = new Chart(ctx2, {
+          type: "pie",
+          data: statusChartData,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return tooltipItem.label + ": " + tooltipItem.raw;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        const ctx3 = document
+          .getElementById("completionTimeChart")
+          .getContext("2d");
+        const completionTimeChart = new Chart(ctx3, {
+          type: "line",
+          data: completionTimeData,
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      };
     </script>
-    <div class="footer">
-      <i class="fa-regular fa-copyright"></i> הוקם ע"י טל יעקב - מחלקת הנדסה
-    </div>
   </body>
 </html>
