@@ -385,6 +385,24 @@
         width: 100%;
         color: white;
       }
+
+      .dark-mode .modal-content {
+        background-color: #2c2c2c;
+        color: #ffffff;
+        border: 1px solid #3b3b3b;
+      }
+
+      .dark-mode .modal-header {
+        border-bottom: 1px solid #3b3b3b;
+      }
+
+      .dark-mode .modal-footer {
+        border-top: 1px solid #3b3b3b;
+      }
+
+      .dark-mode .btn-close {
+        filter: invert(1);
+      }
     </style>
   </head>
   <body>
@@ -544,6 +562,7 @@
             <h5 class="modal-title" id="historyModalLabel">
               היסטוריית פניות ומשימות
             </h5>
+            &nbsp;&nbsp;&nbsp;
             <button
               type="button"
               class="btn-close"
@@ -580,6 +599,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="alertsModalLabel">היסטוריית התראות</h5>
+            &nbsp;&nbsp;&nbsp;
             <button
               type="button"
               class="btn-close"
@@ -749,7 +769,7 @@
           <div class="accordion-button" onclick="toggleAccordion(${task.id})">
             ${
               task.text
-            } <span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
+            }&nbsp;&nbsp;&nbsp; <span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
             <div class="info-content">
               <p>תאריך התחלה: ${task.startDate}</p>
               <hr>
