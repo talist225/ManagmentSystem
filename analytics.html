@@ -109,7 +109,7 @@
       <hr />
       <a href="alerts.html" onclick="showAlerts()">היסטוריית התראות</a>
       <hr />
-      <a href="analytics.html">אנליטיקה</a>
+      <a href="analytics.html">ניתוח נתונים</a>
     </div>
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <div class="container mt-1 pt-5">
@@ -117,13 +117,15 @@
         <img src="logoWhite.svg" alt="תמונה" />
         <h2 class="animated-text">מחלקת הנדסה</h2>
       </div>
-      <h1 class="mb-4">אנליטיקה</h1>
+      <h1 class="mb-4">ניתוח נתונים</h1>
       <div class="chart-container">
         <canvas id="tasksChart"></canvas>
         <div class="chart-text">
           <p>
             גרף זה מציג את מספר הפניות והמשימות שנפתחו במהלך כל חודש קלנדרי.
-            ניתן לראות את התפלגות הפניות והמשימות לאורך השנה.
+            ניתן לראות את התפלגות הפניות והמשימות לאורך השנה. לדוגמה, בחודש
+            ינואר נפתחו 10 פניות ומשימות, בעוד שבחודש דצמבר נפתחו 40 פניות
+            ומשימות, מה שמעיד על עלייה בפעילות בסוף השנה.
           </p>
         </div>
       </div>
@@ -133,6 +135,8 @@
           <p>
             גרף זה מציג את הסטטוס של הפניות והמשימות. ניתן לראות כמה פניות
             ומשימות הסתיימו בהצלחה, כמה נמחקו וכמה עדיין פתוחות ולא טופלו.
+            לדוגמה, 50 פניות ומשימות הסתיימו בהצלחה, 10 נמחקו, ו-40 עדיין פתוחות
+            ולא טופלו, מה שמעיד על הצורך בשיפור הטיפול בפניות פתוחות.
           </p>
         </div>
       </div>
@@ -141,7 +145,9 @@
         <div class="chart-text">
           <p>
             גרף זה מציג את זמן הטיפול בפניות ובמשימות (בימים). ניתן לראות כמה
-            זמן לקח לכל פניה או משימה להיות מטופלת עד שסיימתי אותה.
+            זמן לקח לכל פניה או משימה להיות מטופלת עד שסיימתי אותה. לדוגמה, פניה
+            1 לקחה 5 ימים לטיפול, בעוד שפניה 3 לקחה רק 3 ימים, מה שמעיד על שונות
+            בזמני הטיפול בהתאם לסוג הפניה או המשימה.
           </p>
         </div>
       </div>
@@ -220,6 +226,40 @@
         </div>
       </div>
     </div>
+    <!-- Modal נתונים -->
+    <div
+      class="modal fade"
+      id="dataModal"
+      tabindex="-1"
+      aria-labelledby="dataModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dataModalLabel">נתוני פניות ומשימות</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="dataModalBody">
+            <!-- נתוני פניות ומשימות יתווספו כאן -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              סגור
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-hot-toast/dist/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -252,10 +292,18 @@
         const monthlyData = Array(12).fill(0);
         const statusData = { completed: 0, deleted: 0, open: 0 };
         const completionTimes = [];
+        const taskDetails = [];
 
         tasks.forEach((task) => {
           const month = new Date(task.startDate).getMonth();
           monthlyData[month]++;
+          taskDetails.push({
+            name: task.text,
+            description: task.description,
+            startDate: task.startDate,
+            endDate: task.endDate || "לא צוין",
+            completionDate: task.completionDate || "לא הושלם",
+          });
           if (task.completionDate) {
             statusData.completed++;
             const startDate = new Date(task.startDate);
@@ -270,13 +318,21 @@
 
         deletedTasks.forEach((task) => {
           statusData.deleted++;
+          taskDetails.push({
+            name: task.text,
+            description: task.description,
+            startDate: task.startDate,
+            endDate: task.endDate || "לא צוין",
+            completionDate: "נמחק",
+          });
         });
 
-        return { monthlyData, statusData, completionTimes };
+        return { monthlyData, statusData, completionTimes, taskDetails };
       }
 
       // נתונים מה-localStorage
-      const { monthlyData, statusData, completionTimes } = calculateData();
+      const { monthlyData, statusData, completionTimes, taskDetails } =
+        calculateData();
 
       const tasksData = {
         labels: [
@@ -349,6 +405,15 @@
                 beginAtZero: true,
               },
             },
+            onClick: (event, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const monthTasks = taskDetails.filter(
+                  (task) => new Date(task.startDate).getMonth() === index
+                );
+                showModal(monthTasks);
+              }
+            },
           },
         });
 
@@ -370,6 +435,21 @@
                 },
               },
             },
+            onClick: (event, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const statusTasks = taskDetails.filter((task) => {
+                  if (index === 0)
+                    return (
+                      task.completionDate !== "לא הושלם" &&
+                      task.completionDate !== "נמחק"
+                    );
+                  if (index === 1) return task.completionDate === "נמחק";
+                  if (index === 2) return task.completionDate === "לא הושלם";
+                });
+                showModal(statusTasks);
+              }
+            },
           },
         });
 
@@ -385,9 +465,35 @@
                 beginAtZero: true,
               },
             },
+            onClick: (event, elements) => {
+              if (elements.length > 0) {
+                const index = elements[0].index;
+                const task = taskDetails[index];
+                showModal([task]);
+              }
+            },
           },
         });
       };
+
+      function showModal(tasks) {
+        const modalBody = document.getElementById("dataModalBody");
+        modalBody.innerHTML = tasks
+          .map(
+            (task) => `
+                <p><strong>שם:</strong> ${task.name}</p>
+                <p><strong>תיאור:</strong> ${task.description}</p>
+                <p><strong>תאריך התחלה:</strong> ${task.startDate}</p>
+                <p><strong>תאריך סיום:</strong> ${task.endDate}</p>
+                <p><strong>תאריך סיום בפועל:</strong> ${task.completionDate}</p>
+            `
+          )
+          .join("<hr>");
+        const dataModal = new bootstrap.Modal(
+          document.getElementById("dataModal")
+        );
+        dataModal.show();
+      }
     </script>
   </body>
 </html>
