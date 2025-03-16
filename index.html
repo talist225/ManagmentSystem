@@ -403,6 +403,12 @@
       .dark-mode .btn-close {
         filter: invert(1);
       }
+
+      .dark-mode .list-group-item {
+        background-color: #2c2c2c;
+        color: #ffffff;
+        border: 1px solid #3b3b3b;
+      }
     </style>
   </head>
   <body>
@@ -562,7 +568,6 @@
             <h5 class="modal-title" id="historyModalLabel">
               היסטוריית פניות ומשימות
             </h5>
-            &nbsp;&nbsp;&nbsp;
             <button
               type="button"
               class="btn-close"
@@ -837,12 +842,14 @@
           }
         });
       }
+
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
         const button = content.previousElementSibling;
         content.classList.toggle("show");
         button.classList.toggle("active");
       }
+
       function showHistory() {
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
@@ -850,16 +857,19 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-          <div>
-            <strong>${task.text}</strong>
-            <p class="fw-bold m-0">תיאור: <div>${task.description}<div/></p>
-            <hr>
-            <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
-            <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
-            <p class="mt-3">תאריך סיום: ${task.completionDate}</p> 
-            <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${task.id})">מחק</button>
-          </div>
-        `;
+      <div>
+        <strong>${task.text}</strong>
+        <p class="fw-bold m-0">תיאור: <div>${task.description}<div/></p>
+        <hr>
+        <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
+        <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
+        <p class="mt-3">תאריך סיום: ${task.completionDate}</p> 
+        
+        <button class="btn btn-primary btn-sm" onclick="restoreTask(${task.id})">שחזר</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${task.id})">מחק</button>
+          
+      </div>
+    `;
           historyList.appendChild(listItem);
         });
         const historyModal = new bootstrap.Modal(
@@ -867,6 +877,7 @@
         );
         historyModal.show();
       }
+
       function showAlerts() {
         const alertsList = document.getElementById("alertsList");
         alertsList.innerHTML = "";
@@ -1043,6 +1054,19 @@
           icon.classList.add("fa-moon");
         }
       });
+
+      function restoreTask(id) {
+        const task = deletedTasks.find((task) => task.id === id);
+        if (task) {
+          tasks.push(task);
+          deletedTasks = deletedTasks.filter((task) => task.id !== id);
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          localStorage.setItem("deletedTasks", JSON.stringify(deletedTasks));
+          renderTasks();
+          showHistory();
+          showToast("הפניה/משימה שוחזרה בהצלחה!");
+        }
+      }
     </script>
   </body>
 </html>
