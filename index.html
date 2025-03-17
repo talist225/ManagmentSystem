@@ -259,6 +259,56 @@
         border: 2px solid black;
         font-weight: bold;
       }
+
+      .toggle-button {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 30px;
+      }
+      .toggle-button input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 30px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        /* background-color: white; */
+        transition: 0.4s;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: url("https://cdn-icons-png.flaticon.com/512/702/702471.png");
+        background-size: cover;
+      }
+      input:checked + .slider {
+        background-color: #2196f3;
+      }
+      input:checked + .slider:before {
+        transform: translateX(30px);
+        background-image: url("https://cdn-icons-png.flaticon.com/512/439/439842.png");
+      }
+      .dark-mode {
+        background-color: #121212;
+        color: #ffffff;
+      }
       .toast {
         visibility: hidden;
         max-width: 50%;
@@ -442,9 +492,10 @@
       <a href="analytics.html">ניתוח נתונים</a>
 
       <footer class="sidebar-footer">
-        <button id="darkModeToggle" onclick="toggleDarkMode()">
-          <i id="darkModeIcon" class="fa-regular fa-moon"></i>
-        </button>
+        <label class="toggle-button">
+          <input type="checkbox" id="darkModeToggle" />
+          <span class="slider"></span>
+        </label>
       </footer>
     </div>
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -1025,35 +1076,6 @@
           }
         });
       }
-      function toggleDarkMode() {
-        const body = document.body;
-        const icon = document.getElementById("darkModeIcon");
-        body.classList.toggle("dark-mode");
-        if (body.classList.contains("dark-mode")) {
-          icon.classList.remove("fa-moon");
-          icon.classList.add("fa-sun");
-          localStorage.setItem("darkMode", "enabled");
-        } else {
-          icon.classList.remove("fa-sun");
-          icon.classList.add("fa-moon");
-          localStorage.setItem("darkMode", "disabled");
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const darkMode = localStorage.getItem("darkMode");
-        const body = document.body;
-        const icon = document.getElementById("darkModeIcon");
-        if (darkMode === "enabled") {
-          body.classList.add("dark-mode");
-          icon.classList.remove("fa-moon");
-          icon.classList.add("fa-sun");
-        } else {
-          body.classList.remove("dark-mode");
-          icon.classList.remove("fa-sun");
-          icon.classList.add("fa-moon");
-        }
-      });
 
       function restoreTask(id) {
         const task = deletedTasks.find((task) => task.id === id);
@@ -1067,6 +1089,11 @@
           showToast("הפניה/משימה שוחזרה בהצלחה!");
         }
       }
+
+      const toggle = document.getElementById("darkModeToggle");
+      toggle.addEventListener("change", () => {
+        document.body.classList.toggle("dark-mode", toggle.checked);
+      });
     </script>
   </body>
 </html>
