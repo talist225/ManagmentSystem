@@ -271,7 +271,6 @@
         position: fixed;
         top: 20px;
         right: 18px;
-
         border: none;
         padding: 10px 15px;
         cursor: pointer;
@@ -517,6 +516,7 @@
 
         border-radius: 10px; /* פינות מעוגלות */
       }
+
       .settings-content.show {
         display: block;
       }
@@ -537,6 +537,7 @@
         cursor: pointer; /* סמן עכבר */
         background-color: white;
         width: 100%;
+        transition: background-color 0.1s ease, color 0.3s ease; /* אנימציה */
       }
       .settings-content button:hover {
         background-color: aliceblue;
@@ -547,12 +548,42 @@
       .sidebar.collapsed .settings-button {
         display: none;
       }
+      .settings-content button.active {
+        background-color: #dc3545; /* צבע רקע כחול */
+        color: white; /* צבע טקסט לבן */
+        border: 1px solid #dc3545; /* גבול כהה */
+      }
       .settings-button img {
         transition: transform 0.3s ease-in-out; /* אנימציה חלקה */
       }
 
       .settings-button:hover img {
         transform: rotate(90deg); /* סיבוב של 180 מעלות */
+      }
+
+      /*Darkmode Settings button*/
+      .dark-mode .settings-content button {
+        color: black; /* צבע טקסט לבן */
+        border: none; /* ללא גבול */
+        border-radius: 5px; /* פינות מעוגלות */
+        padding: 10px 15px; /* ריווח פנימי */
+        font-size: 14px; /* גודל טקסט */
+        font-weight: bold; /* טקסט מודגש */
+        cursor: pointer; /* סמן עכבר */
+        background-color: white;
+        width: 100%;
+      }
+      .dark-mode .settings-button img {
+        transition: transform 0.3s ease-in-out; /* אנימציה חלקה */
+        filter: invert(1); /* הופך את הצבעים של האייקון */
+      }
+      .dark-mode .settings-content button:hover {
+        background-color: aliceblue;
+      }
+      .dark-mode .settings-content button.active {
+        background-color: #dc3545; /* צבע רקע כחול */
+        color: white; /* צבע טקסט לבן */
+        border: 1px solid #dc3545; /* גבול כהה */
       }
     </style>
   </head>
@@ -623,13 +654,13 @@
         <div id="settingsContent" class="settings-content">
           <button
             class="btn btn-light btn-sm"
-            onclick="toggleColumn('tasksColumn')"
+            onclick="toggleColumn('tasksColumn', this)"
           >
             הסתר/הצג עמודת משימות
           </button>
           <button
             class="btn btn-light btn-sm"
-            onclick="toggleColumn('requestsColumn')"
+            onclick="toggleColumn('requestsColumn', this)"
           >
             הסתר/הצג עמודת פניות
           </button>
@@ -1170,10 +1201,19 @@
         settingsContent.classList.toggle("show");
       }
 
-      function toggleColumn(columnId) {
+      function toggleColumn(columnId, button) {
         const column = document.getElementById(columnId);
-        column.style.display =
-          column.style.display === "none" ? "block" : "none";
+        const isHidden = column.style.display === "none";
+
+        // הצגת/הסתרת העמודה
+        column.style.display = isHidden ? "block" : "none";
+
+        // הוספה או הסרה של מחלקת active לכפתור
+        if (isHidden) {
+          button.classList.remove("active"); // חזרה לצבע הקודם
+        } else {
+          button.classList.add("active"); // הפיכת הכפתור לאדום
+        }
       }
     </script>
   </body>
