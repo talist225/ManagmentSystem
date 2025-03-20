@@ -210,6 +210,7 @@
         width: 20%;
         padding-right: 15px;
       }
+      /*Sidebar*/
       .sidebar {
         position: fixed;
         top: 0;
@@ -219,49 +220,74 @@
         background: #ebebec;
         padding-top: 20px;
         z-index: 1000;
-        transition: transform 0.3s ease;
+        transition: 0.1s ease-in-out;
         border-left: 0.5px solid #dee2e6;
       }
       .sidebar.collapsed {
-        transform: translateX(100%);
+        width: 85px;
+        padding-top: 140px;
+        transition: 0.1s ease-in-out;
+      }
+      .sidebar.collapsed .title,
+      .sidebar.collapsed .link-text {
+        display: none;
+      }
+
+      .sidebar.collapsed a {
+        justify-content: center;
+      }
+
+      .sidebar a .link-icon {
+        margin-left: 10px;
       }
       .sidebar a {
         padding: 10px 15px;
         text-decoration: none;
         font-size: 18px;
-        color: black;
-        display: block;
+        color: white;
+        display: flex;
+        align-items: center;
         margin-top: 10px;
-        font-weight: bold;
+        transition: background-color 0.3s ease;
+        color: black;
       }
       .sidebar a:hover {
-        transform: scale(1.1);
-        margin: 10px;
+        background-color: #bdbebe;
       }
       .sidebar .title {
         color: black;
         padding: 15px;
         font-size: 30px;
+        margin-top: 50px;
       }
       .sidebar button {
         border-radius: 50%;
         font-size: 20px;
-        border: 2px solid black;
+        border: 2px solid white;
+        background-color: #343a40;
+        color: white;
       }
       .toggle-btn {
         position: fixed;
         top: 20px;
         right: 20px;
-        background-color: #ebebec;
-        color: black;
+
         border: none;
         padding: 10px 15px;
         cursor: pointer;
         z-index: 1001;
         border: 2px solid black;
         font-weight: bold;
+        transition: transform 0.3s ease-in-out;
       }
-
+      /*Sidebar Footer*/
+      .sidebar-footer {
+        position: fixed;
+        right: 15px;
+        bottom: 15px;
+        width: 100%;
+        color: white;
+      }
       .toggle-button {
         position: relative;
         display: inline-block;
@@ -444,14 +470,6 @@
         transition: 0.1s ease-in-out;
       }
 
-      .sidebar-footer {
-        position: fixed;
-        right: 15px;
-        bottom: 15px;
-        width: 100%;
-        color: white;
-      }
-
       .dark-mode .modal-content {
         background-color: #2c2c2c;
         color: #ffffff;
@@ -497,20 +515,36 @@
       ></button>
     </div>
     <div class="sidebar" id="sidebar">
-      <br /><br />
       <h3 class="title">מחלקת הנדסה</h3>
-      <a href="index.html">בית</a>
+      <a href="index.html"
+        ><i class="fas fa-home link-icon"></i
+        ><span class="link-text">בית</span></a
+      >
       <hr />
-      <a href="index.html">משימות</a>
+      <a href="index.html"
+        ><i class="fas fa-tasks link-icon"></i
+        ><span class="link-text">משימות</span></a
+      >
       <hr />
-      <a href="index.html">פניות</a>
+      <a href="index.html"
+        ><i class="fas fa-envelope link-icon"></i
+        ><span class="link-text">פניות</span></a
+      >
       <hr />
-      <a href="#history" onclick="showHistory()">היסטוריה</a>
+      <a href="#history" onclick="showHistory()"
+        ><i class="fas fa-history link-icon"></i
+        ><span class="link-text">היסטוריה</span></a
+      >
       <hr />
-      <a href="#alerts" onclick="showAlerts()">היסטוריית התראות</a>
+      <a href="#alerts" onclick="showAlerts()"
+        ><i class="fas fa-bell link-icon"></i
+        ><span class="link-text">היסטוריית התראות</span></a
+      >
       <hr />
-      <a href="analytics.html">ניתוח נתונים</a>
-
+      <a href="analytics.html"
+        ><i class="fas fa-chart-bar link-icon"></i
+        ><span class="link-text">ניתוח נתונים</span></a
+      >
       <footer class="sidebar-footer">
         <label class="toggle-button">
           <input type="checkbox" id="darkModeToggle" />
@@ -527,6 +561,7 @@
         <h2 class="animated-text">מחלקת הנדסה</h2>
       </div>
       <h1 class="mb-4">ניהול פניות ומשימות</h1>
+
       <div class="form-group mb-3">
         <div>
           <label for="newTask" class="form-label">פניה חדשה*</label>
