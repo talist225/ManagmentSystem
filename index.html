@@ -288,6 +288,11 @@
         width: 100%;
         color: white;
       }
+      .sidebar.collapsed .toggle-button {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+      }
       .toggle-button {
         position: relative;
         display: inline-block;
@@ -497,6 +502,58 @@
         color: #ffffff;
         border: 1px solid #3b3b3b;
       }
+
+      /*Settings button*/
+      .settings-content {
+        display: none;
+        padding: 10px;
+        border-top: 1px solid rgb(66, 66, 66);
+        background-color: #f8f9fa;
+        position: absolute;
+        bottom: 60px;
+        right: 15px;
+        width: 200px; /* הרחבת הרוחב */
+        background: #ccc;
+
+        border-radius: 10px; /* פינות מעוגלות */
+      }
+      .settings-content.show {
+        display: block;
+      }
+      .settings-button {
+        color: black;
+        border: none;
+        cursor: pointer;
+        transition: 0.1s ease-in-out;
+        width: 50px;
+      }
+      .settings-content button {
+        color: black; /* צבע טקסט לבן */
+        border: none; /* ללא גבול */
+        border-radius: 5px; /* פינות מעוגלות */
+        padding: 10px 15px; /* ריווח פנימי */
+        font-size: 14px; /* גודל טקסט */
+        font-weight: bold; /* טקסט מודגש */
+        cursor: pointer; /* סמן עכבר */
+        background-color: white;
+        width: 100%;
+      }
+      .settings-content button:hover {
+        background-color: aliceblue;
+      }
+      .settings-content button + button {
+        margin-top: 10px; /* רווח בין הכפתורים */
+      }
+      .sidebar.collapsed .settings-button {
+        display: none;
+      }
+      .settings-button img {
+        transition: transform 0.3s ease-in-out; /* אנימציה חלקה */
+      }
+
+      .settings-button:hover img {
+        transform: rotate(90deg); /* סיבוב של 180 מעלות */
+      }
     </style>
   </head>
   <body>
@@ -545,11 +602,38 @@
         ><i class="fas fa-chart-bar link-icon"></i
         ><span class="link-text">ניתוח נתונים</span></a
       >
+      <span class="btn mt-2 settings-button" onclick="toggleSettings()">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3524/3524636.png"
+          alt="Settings"
+          style="
+            width: 25px;
+            height: 25px;
+            margin-top: 220px;
+            margin-right: 10px;
+          "
+        />
+      </span>
       <footer class="sidebar-footer">
         <label class="toggle-button">
           <input type="checkbox" id="darkModeToggle" />
           <span class="slider"></span>
         </label>
+
+        <div id="settingsContent" class="settings-content">
+          <button
+            class="btn btn-light btn-sm"
+            onclick="toggleColumn('tasksColumn')"
+          >
+            הסתר/הצג עמודת משימות
+          </button>
+          <button
+            class="btn btn-light btn-sm"
+            onclick="toggleColumn('requestsColumn')"
+          >
+            הסתר/הצג עמודת פניות
+          </button>
+        </div>
       </footer>
     </div>
     <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
@@ -561,7 +645,6 @@
         <h2 class="animated-text">מחלקת הנדסה</h2>
       </div>
       <h1 class="mb-4">ניהול פניות ומשימות</h1>
-
       <div class="form-group mb-3">
         <div>
           <label for="newTask" class="form-label">פניה חדשה*</label>
@@ -645,13 +728,13 @@
       </div>
       <hr />
       <div class="columns">
-        <div class="column">
+        <div class="column" id="tasksColumn">
           <h3 id="tasks">משימות</h3>
           <div id="taskAccordion">
             <!-- משימות יתווספו כאן -->
           </div>
         </div>
-        <div class="column">
+        <div class="column" id="requestsColumn">
           <h3 id="requests">פניות</h3>
           <div id="requestAccordion">
             <!-- פניות יתווספו כאן -->
@@ -659,81 +742,6 @@
         </div>
       </div>
       <hr />
-    </div>
-    <!-- Modal היסטוריה -->
-    <div
-      class="modal fade"
-      id="historyModal"
-      tabindex="-1"
-      aria-labelledby="historyModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="historyModalLabel">
-              היסטוריית פניות ומשימות
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <ul id="historyList" class="list-group">
-              <!-- היסטוריית פניות ומשימות תתווסף כאן -->
-            </ul>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              סגור
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal היסטוריית התראות -->
-    <div
-      class="modal fade"
-      id="alertsModal"
-      tabindex="-1"
-      aria-labelledby="alertsModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="alertsModalLabel">היסטוריית התראות</h5>
-            &nbsp;&nbsp;&nbsp;
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <ul id="alertsList" class="list-group">
-              <!-- היסטוריית התראות תתווסף כאן -->
-            </ul>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              סגור
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="footer">
       <i class="fa-regular fa-copyright"></i> הוקם ע"י טל יעקב - מחלקת הנדסה
@@ -877,70 +885,74 @@
           const taskItem = document.createElement("div");
           taskItem.className = `task-item priority-${task.priority}`;
           taskItem.innerHTML = `
-          <div class="accordion-button" onclick="toggleAccordion(${task.id})">
-            ${
-              task.text
-            }&nbsp;&nbsp;&nbsp; <span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
-            <div class="info-content">
-              <p>תאריך התחלה: ${task.startDate}</p>
-              <hr>
-              <p>תאריך יעד סופי: ${task.endDate}</p>
-            </div>
-            </span>
-          </div>
-          <div id="accordion-content-${task.id}" class="accordion-content">
-            <p class="task-description">${task.description}</p>
-            ${
-              task.comments
-                ? task.comments
-                    .map(
-                      (comment) => `
-              <hr id="hr-${comment.id}">
-              <div id="comment-${comment.id}">
-                <p class="fw-bold">
-                  הערה (${comment.date}):
-                </p> 
-                ${comment.text} 
-                <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
-                  <i class="fa-solid fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            `
-                    )
-                    .join("")
-                : ""
-            }
-            <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
-              <div class="d-flex">
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
-                  task.id
-                })">ערוך כותרת</button>
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
-                  task.id
-                })">ערוך תיאור</button>
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
-                  task.id
-                })">הוסף הערה</button>
-              </div>
-              <select class="form-select form-select-sm w-25 me-2" onchange="changeTaskType(${
-                task.id
-              }, this.value)">
-                <option value="פניה" ${
-                  task.type === "פניה" ? "selected" : ""
-                }>פניה</option>
-                <option value="משימה" ${
-                  task.type === "משימה" ? "selected" : ""
-                }>משימה</option>
-              </select>
-              <button class="btn btn-success btn-sm fw-bold" onclick="deleteTask(${
-                task.id
-              })">בוצע</button>
-            </div>
-          </div>
-        `;
+                    <div class="accordion-button" onclick="toggleAccordion(${
+                      task.id
+                    })">
+                        ${
+                          task.text
+                        } &nbsp;&nbsp;&nbsp;<span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
+                        <div class="info-content">
+                            <p>תאריך התחלה: ${task.startDate}</p>
+                            <hr>
+                            <p>תאריך יעד סופי: ${task.endDate}</p>
+                        </div>
+                        </span>
+                    </div>
+                    <div id="accordion-content-${
+                      task.id
+                    }" class="accordion-content">
+                        <p class="task-description">${task.description}</p>
+                        ${
+                          task.comments
+                            ? task.comments
+                                .map(
+                                  (comment) => `
+                            <hr id="hr-${comment.id}">
+                            <div id="comment-${comment.id}">
+                                <p class="fw-bold">
+                                    הערה (${comment.date}):
+                                </p> 
+                                ${comment.text} 
+                                <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
+                                    <i class="fa-solid fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        `
+                                )
+                                .join("")
+                            : ""
+                        }
+                        <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
+                            <div class="d-flex">
+                                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
+                                  task.id
+                                })">ערוך כותרת</button>
+                                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
+                                  task.id
+                                })">ערוך תיאור</button>
+                                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
+                                  task.id
+                                })">הוסף הערה</button>
+                            </div>
+                            <select class="form-select form-select-sm w-25 me-2" onchange="changeTaskType(${
+                              task.id
+                            }, this.value)">
+                                <option value="פניה" ${
+                                  task.type === "פניה" ? "selected" : ""
+                                }>פניה</option>
+                                <option value="משימה" ${
+                                  task.type === "משימה" ? "selected" : ""
+                                }>משימה</option>
+                            </select>
+                            <button class="btn btn-success btn-sm fw-bold" onclick="deleteTask(${
+                              task.id
+                            })">בוצע</button>
+                        </div>
+                    </div>
+                `;
           if (task.type === "משימה") {
             taskAccordion.appendChild(taskItem);
           } else {
@@ -948,14 +960,12 @@
           }
         });
       }
-
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
         const button = content.previousElementSibling;
         content.classList.toggle("show");
         button.classList.toggle("active");
       }
-
       function showHistory() {
         const historyList = document.getElementById("historyList");
         historyList.innerHTML = "";
@@ -963,19 +973,17 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-      <div>
-        <strong>${task.text}</strong>
-        <p class="fw-bold m-0">תיאור: <div>${task.description}<div/></p>
-        <hr>
-        <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
-        <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
-        <p class="mt-3">תאריך סיום: ${task.completionDate}</p> 
-        
-        <button class="btn btn-primary btn-sm" onclick="restoreTask(${task.id})">שחזר</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${task.id})">מחק</button>
-          
-      </div>
-    `;
+                    <div>
+                        <strong>${task.text}</strong>
+                        <p class="fw-bold m-0">תיאור: <div>${task.description}<div/></p>
+                        <hr>
+                        <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
+                        <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
+                        <p class="mt-3">תאריך סיום: ${task.completionDate}</p> 
+                        <button class="btn btn-primary btn-sm" onclick="restoreTask(${task.id})">שחזר</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${task.id})">מחק</button>
+                    </div>
+                `;
           historyList.appendChild(listItem);
         });
         const historyModal = new bootstrap.Modal(
@@ -983,7 +991,6 @@
         );
         historyModal.show();
       }
-
       function showAlerts() {
         const alertsList = document.getElementById("alertsList");
         alertsList.innerHTML = "";
@@ -991,12 +998,12 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-          <div>
-            <strong>${alert.text}</strong>
-            <p>תאריך יעד סופי: ${alert.endDate}</p>
-            <button class="btn btn-danger btn-sm" onclick="deleteAlert(${index})">מחק</button>
-          </div>
-        `;
+                    <div>
+                        <strong>${alert.text}</strong>
+                        <p>תאריך יעד סופי: ${alert.endDate}</p>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAlert(${index})">מחק</button>
+                    </div>
+                `;
           alertsList.appendChild(listItem);
         });
         const alertsModal = new bootstrap.Modal(
@@ -1131,7 +1138,6 @@
           }
         });
       }
-
       function restoreTask(id) {
         const task = deletedTasks.find((task) => task.id === id);
         if (task) {
@@ -1144,16 +1150,13 @@
           showToast("הפניה/משימה שוחזרה בהצלחה!");
         }
       }
-
       const toggle = document.getElementById("darkModeToggle");
       const body = document.body;
-
       // Check local storage for dark mode preference
       if (localStorage.getItem("darkMode") === "enabled") {
         body.classList.add("dark-mode");
         toggle.checked = true;
       }
-
       toggle.addEventListener("change", () => {
         body.classList.toggle("dark-mode", toggle.checked);
         if (toggle.checked) {
@@ -1162,6 +1165,16 @@
           localStorage.setItem("darkMode", "disabled");
         }
       });
+      function toggleSettings() {
+        const settingsContent = document.getElementById("settingsContent");
+        settingsContent.classList.toggle("show");
+      }
+
+      function toggleColumn(columnId) {
+        const column = document.getElementById(columnId);
+        column.style.display =
+          column.style.display === "none" ? "block" : "none";
+      }
     </script>
   </body>
 </html>
