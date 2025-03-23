@@ -569,6 +569,13 @@
         color: white; /* צבע טקסט לבן */
         border: 1px solid #dc3545; /* גבול כהה */
       }
+      .dark-mode .modal-delete-confirmation .modal-content {
+        background-color: #f8d7da;
+        color: black;
+      }
+
+      .dark-mode .modal-delete-confirmation .modal-content .btn-close {
+      }
 
       /*Modal delete confirmation*/
       .modal-delete-confirmation {
@@ -906,9 +913,13 @@
       <div class="modal-dialog modal-delete-confirmation">
         <div class="modal-content">
           <div class="modal-header">
+            <i class="fas fa-exclamation-triangle text-danger"></i
+            >&nbsp;&nbsp;&nbsp;
             <h5 class="modal-title" id="deleteConfirmationModalLabel">
               אישור מחיקה
             </h5>
+            &nbsp;&nbsp;&nbsp;
+
             <button
               type="button"
               class="btn-close"
