@@ -1130,17 +1130,21 @@
           listItem.className = "list-group-item";
           listItem.innerHTML = `
                     <div>
-                        <strong>${task.text}</strong>
-                        <p class="fw-bold m-0">תיאור: ${
+                        <strong><h4>${task.text}</h4></strong>
+                        <p class="fw-bold m-0"><h5>תיאור: ${
                           task.description || "לא צוין"
-                        }</p>
+                        }</h5></p>
                         <hr>
-                        <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
-                        <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
-                        <p class="mb-0">תאריך סיום: ${
+                        <p class="mb-0"><b>תאריך התחלה:</b> ${
+                          task.startDate
+                        }</p>
+                        <p class="mb-0"><b>תאריך יעד סופי<:</b> ${
+                          task.endDate
+                        }</p>
+                        <p class="mb-0"><b>תאריך סיום:</b> ${
                           task.completionDate || "לא צוין"
                         }</p>
-                        <p class="mb-0">סיבת סיום: ${
+                        <p class="mb-0"><b>סיבת סיום:</b> ${
                           task.completionReason || "לא צוין"
                         }</p>
                         <button class="btn btn-primary btn-sm" onclick="restoreTask(${
