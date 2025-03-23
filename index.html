@@ -232,11 +232,9 @@
       .sidebar.collapsed .link-text {
         display: none;
       }
-
       .sidebar.collapsed a {
         justify-content: center;
       }
-
       .sidebar a .link-icon {
         margin-left: 10px;
       }
@@ -321,7 +319,6 @@
         width: 22px;
         left: 4px;
         bottom: 4px;
-
         transition: 0.4s;
         border-radius: 50%;
         display: flex;
@@ -436,7 +433,6 @@
         color: #ffffff;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .toggle-btn {
         background-color: #2c2c2c;
         color: #ffffff;
@@ -459,12 +455,10 @@
         color: #ffffff;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .sidebar .title {
         color: #ffffff;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .sidebar button {
         border-radius: 50%;
         font-size: 20px;
@@ -473,35 +467,29 @@
         color: #ffffff;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .modal-content {
         background-color: #2c2c2c;
         color: #ffffff;
         border: 1px solid #3b3b3b;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .modal-header {
         border-bottom: 1px solid #3b3b3b;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .modal-footer {
         border-top: 1px solid #3b3b3b;
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .btn-close {
         filter: invert(1);
         transition: 0.1s ease-in-out;
       }
-
       .dark-mode .list-group-item {
         background-color: #2c2c2c;
         color: #ffffff;
         border: 1px solid #3b3b3b;
       }
-
       /*Settings button*/
       .settings-content {
         display: none;
@@ -513,10 +501,8 @@
         right: 15px;
         width: 200px; /* הרחבת הרוחב */
         background: #ccc;
-
         border-radius: 10px; /* פינות מעוגלות */
       }
-
       .settings-content.show {
         display: block;
       }
@@ -556,11 +542,9 @@
       .settings-button img {
         transition: transform 0.3s ease-in-out; /* אנימציה חלקה */
       }
-
       .settings-button:hover img {
         transform: rotate(90deg); /* סיבוב של 180 מעלות */
       }
-
       /*Darkmode Settings button*/
       .dark-mode .settings-content button {
         color: black; /* צבע טקסט לבן */
@@ -650,7 +634,6 @@
           <input type="checkbox" id="darkModeToggle" />
           <span class="slider"></span>
         </label>
-
         <div id="settingsContent" class="settings-content">
           <button
             class="btn btn-light btn-sm"
@@ -777,6 +760,129 @@
     <div class="footer">
       <i class="fa-regular fa-copyright"></i> הוקם ע"י טל יעקב - מחלקת הנדסה
     </div>
+
+    <!-- Modal להיסטוריה -->
+    <div
+      class="modal fade"
+      id="historyModal"
+      tabindex="-1"
+      aria-labelledby="historyModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="historyModalLabel">היסטוריה</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ul id="historyList" class="list-group">
+              <!-- פריטים יתווספו כאן -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal להיסטוריית התראות -->
+    <div
+      class="modal fade"
+      id="alertsModal"
+      tabindex="-1"
+      aria-labelledby="alertsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="alertsModalLabel">היסטוריית התראות</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ul id="alertsList" class="list-group">
+              <!-- פריטים יתווספו כאן -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal לסיבת סיום -->
+    <div
+      class="modal fade"
+      id="completionReasonModal"
+      tabindex="-1"
+      aria-labelledby="completionReasonModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="completionReasonModalLabel">
+              סיבת סיום
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="completionReasonForm">
+              <div class="mb-3">
+                <label for="completionReason" class="form-label"
+                  >בחר סיבת סיום</label
+                >
+                <select id="completionReason" class="form-select">
+                  <option value="סיום משימה/פניה">סיום משימה/פניה</option>
+                  <option value="בוטל">בוטל</option>
+                  <option value="הועבר למחלקה אחרת">הועבר למחלקה אחרת</option>
+                  <option value="לא רלוונטי">לא רלוונטי</option>
+                  <option value="אחר">אחר</option>
+                </select>
+              </div>
+              <div class="mb-3" id="otherReasonGroup" style="display: none">
+                <label for="otherReason" class="form-label">סיבה אחרת</label>
+                <input
+                  type="text"
+                  id="otherReason"
+                  class="form-control"
+                  placeholder="הכנס סיבה אחרת"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              סגור
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="completeTask()"
+            >
+              סיים
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-hot-toast/dist/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -784,6 +890,7 @@
       let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
       let deletedTasks = JSON.parse(localStorage.getItem("deletedTasks")) || [];
       let alerts = JSON.parse(localStorage.getItem("alerts")) || [];
+
       document.addEventListener("DOMContentLoaded", () => {
         const startDateInput = document.getElementById("startDate");
         const now = new Date();
@@ -810,11 +917,13 @@
         });
         setInterval(checkDeadlines, 60000); // בדיקת תאריכי יעד כל דקה
       });
+
       function toggleDescription() {
         const descriptionGroup = document.querySelector(".description-group");
         descriptionGroup.style.display =
           descriptionGroup.style.display === "none" ? "flex" : "none";
       }
+
       function addTask() {
         const newTaskInput = document.getElementById("newTask");
         const startDateInput = document.getElementById("startDate");
@@ -857,6 +966,7 @@
           showToast("יש למלא את כל השדות המסומנים בכוכבית.");
         }
       }
+
       function deleteTask(id) {
         const task = tasks.find((task) => task.id === id);
         task.completionDate = new Date().toLocaleString("he-IL"); // הוספת תאריך סיום
@@ -867,6 +977,7 @@
         renderTasks();
         showToast("הפניה/משימה נמחקה בהצלחה!");
       }
+
       function editTask(id) {
         const task = tasks.find((task) => task.id === id);
         const newText = prompt("ערוך את הטקסט של הפניה:", task.text);
@@ -879,6 +990,7 @@
           showToast("הכותרת נערכה בהצלחה!");
         }
       }
+
       function editDescription(id) {
         const task = tasks.find((task) => task.id === id);
         const newDescription = prompt(
@@ -894,12 +1006,14 @@
           showToast("התיאור נערך בהצלחה!");
         }
       }
+
       function deleteTaskFromHistory(id) {
         deletedTasks = deletedTasks.filter((task) => task.id !== id);
         localStorage.setItem("deletedTasks", JSON.stringify(deletedTasks));
         showHistory();
         showToast("הפניה/משימה נמחקה מההיסטוריה בהצלחה!");
       }
+
       function changeTaskType(id, newType) {
         tasks = tasks.map((task) =>
           task.id === id ? { ...task, type: newType } : task
@@ -907,6 +1021,7 @@
         localStorage.setItem("tasks", JSON.stringify(tasks));
         renderTasks();
       }
+
       function renderTasks() {
         const taskAccordion = document.getElementById("taskAccordion");
         const requestAccordion = document.getElementById("requestAccordion");
@@ -916,54 +1031,54 @@
           const taskItem = document.createElement("div");
           taskItem.className = `task-item priority-${task.priority}`;
           taskItem.innerHTML = `
-                    <div class="accordion-button" onclick="toggleAccordion(${
-                      task.id
-                    })">
-                        ${
-                          task.text
-                        } &nbsp;&nbsp;&nbsp;<span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
-                        <div class="info-content">
-                            <p>תאריך התחלה: ${task.startDate}</p>
-                            <hr>
-                            <p>תאריך יעד סופי: ${task.endDate}</p>
-                        </div>
-                        </span>
-                    </div>
-                    <div id="accordion-content-${
-                      task.id
-                    }" class="accordion-content">
-                        <p class="task-description">${task.description}</p>
-                        ${
-                          task.comments
-                            ? task.comments
-                                .map(
-                                  (comment) => `
-                            <hr id="hr-${comment.id}">
-                            <div id="comment-${comment.id}">
-                                <p class="fw-bold">
-                                    הערה (${comment.date}):
-                                </p> 
-                                ${comment.text} 
-                                <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
-                                    <i class="fa-solid fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        `
-                                )
-                                .join("")
-                            : ""
-                        }
-                        <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
-                            <div class="d-flex">
-                                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
-                                  task.id
-                                })">ערוך כותרת</button>
-                                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
-                                  task.id
-                                })">ערוך תיאור</button>
+                  <div class="accordion-button" onclick="toggleAccordion(${
+                    task.id
+                  })">
+                      ${
+                        task.text
+                      } <span class="info-icon"><i class="fa-solid fa-calendar-days"></i>
+                      <div class="info-content">
+                          <p>תאריך התחלה: ${task.startDate}</p>
+                          <hr>
+                          <p>תאריך יעד סופי: ${task.endDate}</p>
+                      </div>
+                      </span>
+                  </div>
+                  <div id="accordion-content-${
+                    task.id
+                  }" class="accordion-content">
+                      <p class="task-description">${task.description}</p>
+                      ${
+                        task.comments
+                          ? task.comments
+                              .map(
+                                (comment) => `
+                      <hr id="hr-${comment.id}">
+                      <div id="comment-${comment.id}">
+                          <p class="fw-bold">
+                              הערה (${comment.date}):
+                          </p> 
+                          ${comment.text} 
+                          <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
+                              <i class="fa-solid fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
+                              <i class="fa-solid fa-trash-can"></i>
+                          </button>
+                      </div>
+                      `
+                              )
+                              .join("")
+                          : ""
+                      }
+                      <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
+                          <div class="d-flex">
+                              <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
+                                task.id
+                              })">ערוך כותרת</button>
+                                                              <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
+                                                                task.id
+                                                              })">ערוך תיאור</button>
                                 <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
                                   task.id
                                 })">הוסף הערה</button>
@@ -978,7 +1093,7 @@
                                   task.type === "משימה" ? "selected" : ""
                                 }>משימה</option>
                             </select>
-                            <button class="btn btn-success btn-sm fw-bold" onclick="deleteTask(${
+                            <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
                               task.id
                             })">בוצע</button>
                         </div>
@@ -991,37 +1106,56 @@
           }
         });
       }
+
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
         const button = content.previousElementSibling;
         content.classList.toggle("show");
         button.classList.toggle("active");
       }
+
       function showHistory() {
         const historyList = document.getElementById("historyList");
-        historyList.innerHTML = "";
+        if (!historyList) {
+          console.error("Element with id 'historyList' not found.");
+          return;
+        }
+        historyList.innerHTML = ""; // איפוס הרשימה
         deletedTasks.forEach((task) => {
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
                     <div>
                         <strong>${task.text}</strong>
-                        <p class="fw-bold m-0">תיאור: <div>${task.description}<div/></p>
+                        <p class="fw-bold m-0">תיאור: ${
+                          task.description || "לא צוין"
+                        }</p>
                         <hr>
                         <p class="mb-0">תאריך התחלה: ${task.startDate}</p>
                         <p class="mb-0">תאריך יעד סופי: ${task.endDate}</p>
-                        <p class="mt-3">תאריך סיום: ${task.completionDate}</p> 
-                        <button class="btn btn-primary btn-sm" onclick="restoreTask(${task.id})">שחזר</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${task.id})">מחק</button>
+                        <p class="mb-0">תאריך סיום: ${
+                          task.completionDate || "לא צוין"
+                        }</p>
+                        <p class="mb-0">סיבת סיום: ${
+                          task.completionReason || "לא צוין"
+                        }</p>
+                        <button class="btn btn-primary btn-sm" onclick="restoreTask(${
+                          task.id
+                        })">שחזר</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${
+                          task.id
+                        })">מחק</button>
                     </div>
                 `;
           historyList.appendChild(listItem);
         });
+        // הצגת ה-Modal
         const historyModal = new bootstrap.Modal(
           document.getElementById("historyModal")
         );
         historyModal.show();
       }
+
       function showAlerts() {
         const alertsList = document.getElementById("alertsList");
         alertsList.innerHTML = "";
@@ -1042,16 +1176,19 @@
         );
         alertsModal.show();
       }
+
       function deleteAlert(index) {
         alerts.splice(index, 1);
         localStorage.setItem("alerts", JSON.stringify(alerts));
         showAlerts();
         showToast("ההתראה נמחקה בהצלחה!");
       }
+
       function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
         sidebar.classList.toggle("collapsed");
       }
+
       function showToast(message) {
         const toast = document.getElementById("toast");
         toast.innerText = message;
@@ -1060,6 +1197,7 @@
           toast.className = toast.className.replace("show", "");
         }, 3000);
       }
+
       function checkDeadlines() {
         const now = new Date();
         tasks.forEach((task) => {
@@ -1071,9 +1209,11 @@
           }
         });
       }
+
       document.addEventListener("DOMContentLoaded", () => {
         checkAlertState();
       });
+
       function showDeadlineAlert(taskText, endDate) {
         const alert = document.getElementById("deadlineAlert");
         alert.querySelector(
@@ -1084,11 +1224,13 @@
         localStorage.setItem("alerts", JSON.stringify(alerts));
         localStorage.setItem("alertState", "visible");
       }
+
       function closeAlert() {
         const alert = document.getElementById("deadlineAlert");
         alert.style.display = "none";
         localStorage.setItem("alertState", "closed");
       }
+
       function checkAlertState() {
         const alertState = localStorage.getItem("alertState");
         const alert = document.getElementById("deadlineAlert");
@@ -1098,6 +1240,7 @@
           alert.style.display = "none";
         }
       }
+
       function addComment(id) {
         const task = tasks.find((task) => task.id === id);
         const newComment = prompt("הוסף הערה חדשה:");
@@ -1117,6 +1260,7 @@
           showToast("ההערה נוספה בהצלחה!");
         }
       }
+
       function deleteComment(taskId, commentId) {
         const task = tasks.find((task) => task.id === taskId);
         const updatedComments = task.comments.filter(
@@ -1129,6 +1273,7 @@
         renderTasks();
         showToast("ההערה נמחקה בהצלחה!");
       }
+
       function editComment(taskId, commentId) {
         const task = tasks.find((task) => task.id === taskId);
         const comment = task.comments.find(
@@ -1149,10 +1294,12 @@
           showToast("ההערה נערכה בהצלחה!");
         }
       }
+
       function toggleSearch() {
         const searchInput = document.getElementById("searchInput");
         searchInput.classList.toggle("show");
       }
+
       function filterTasks() {
         const searchInput = document
           .getElementById("searchInput")
@@ -1169,6 +1316,7 @@
           }
         });
       }
+
       function restoreTask(id) {
         const task = deletedTasks.find((task) => task.id === id);
         if (task) {
@@ -1181,6 +1329,7 @@
           showToast("הפניה/משימה שוחזרה בהצלחה!");
         }
       }
+
       const toggle = document.getElementById("darkModeToggle");
       const body = document.body;
       // Check local storage for dark mode preference
@@ -1196,6 +1345,7 @@
           localStorage.setItem("darkMode", "disabled");
         }
       });
+
       function toggleSettings() {
         const settingsContent = document.getElementById("settingsContent");
         settingsContent.classList.toggle("show");
@@ -1204,16 +1354,67 @@
       function toggleColumn(columnId, button) {
         const column = document.getElementById(columnId);
         const isHidden = column.style.display === "none";
-
         // הצגת/הסתרת העמודה
         column.style.display = isHidden ? "block" : "none";
-
         // הוספה או הסרה של מחלקת active לכפתור
         if (isHidden) {
           button.classList.remove("active"); // חזרה לצבע הקודם
         } else {
           button.classList.add("active"); // הפיכת הכפתור לאדום
         }
+      }
+
+      function showCompletionReasonModal(taskId) {
+        const completionReasonModal = new bootstrap.Modal(
+          document.getElementById("completionReasonModal")
+        );
+        completionReasonModal.show();
+        document.getElementById("completionReasonForm").onsubmit = function (
+          event
+        ) {
+          event.preventDefault();
+          completeTask(taskId);
+        };
+        document.getElementById("completionReason").onchange = function () {
+          const otherReasonGroup = document.getElementById("otherReasonGroup");
+          otherReasonGroup.style.display =
+            this.value === "אחר" ? "block" : "none";
+        };
+      }
+
+      function completeTask() {
+        const taskId = document.getElementById("completionReasonForm").dataset
+          .taskId;
+        const task = tasks.find((task) => task.id === parseInt(taskId));
+        const completionReason =
+          document.getElementById("completionReason").value;
+        const otherReason = document.getElementById("otherReason").value.trim();
+        task.completionReason =
+          completionReason === "אחר" ? otherReason : completionReason;
+        task.completionDate = new Date().toLocaleString("he-IL"); // הוספת תאריך סיום
+        deletedTasks.push(task);
+        tasks = tasks.filter((task) => task.id !== parseInt(taskId));
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        localStorage.setItem("deletedTasks", JSON.stringify(deletedTasks));
+        renderTasks();
+        showToast("הפניה/משימה סויימה בהצלחה!");
+        const completionReasonModal = bootstrap.Modal.getInstance(
+          document.getElementById("completionReasonModal")
+        );
+        completionReasonModal.hide();
+      }
+
+      function showCompletionReasonModal(taskId) {
+        const completionReasonModal = new bootstrap.Modal(
+          document.getElementById("completionReasonModal")
+        );
+        document.getElementById("completionReasonForm").dataset.taskId = taskId;
+        completionReasonModal.show();
+        document.getElementById("completionReason").onchange = function () {
+          const otherReasonGroup = document.getElementById("otherReasonGroup");
+          otherReasonGroup.style.display =
+            this.value === "אחר" ? "block" : "none";
+        };
       }
     </script>
   </body>
