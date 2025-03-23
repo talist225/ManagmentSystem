@@ -389,7 +389,7 @@
         position: static;
         left: 0;
         bottom: 0;
-        margin-top: 100px;
+        margin-top: 20px;
         width: 100%;
         background-color: #ebebec;
         text-align: center;
@@ -574,9 +574,6 @@
         color: black;
       }
 
-      .dark-mode .modal-delete-confirmation .modal-content .btn-close {
-      }
-
       /*Modal delete confirmation*/
       .modal-delete-confirmation {
         max-width: 400px; /* קביעת רוחב מקסימלי */
@@ -584,6 +581,30 @@
       }
       .modal-delete-confirmation .modal-content {
         background-color: #f8d7da;
+      }
+
+      /*Import/Export style*/
+      .import-export {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        margin-top: auto;
+      }
+
+      .tooltip-modal {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        width: 200px;
+        margin-bottom: 120px;
+      }
+      .button-group:hover .tooltip-modal {
+        display: block;
       }
     </style>
   </head>
@@ -633,6 +654,7 @@
         ><i class="fas fa-chart-bar link-icon"></i
         ><span class="link-text">ניתוח נתונים</span></a
       >
+
       <span class="btn mt-2 settings-button" onclick="toggleSettings()">
         <img
           src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png"
@@ -771,7 +793,47 @@
           </div>
         </div>
       </div>
+
       <hr />
+      <div class="button-group import-export mt-5 mb-0">
+        <button
+          class="btn btn-outline-success"
+          onclick="exportData()"
+          onmouseover="showTooltip('exportTooltip')"
+          onmouseout="hideTooltip('exportTooltip')"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/8828/8828334.png"
+            alt="Export Icon"
+            style="width: 20px; height: 20px"
+          />
+        </button>
+        <div id="exportTooltip" class="tooltip-modal">
+          פעולה זו תייצא את כל הנתונים לקובץ JSON.
+          <b>לגיבוי בלבד</b>
+        </div>
+        <input
+          type="file"
+          id="importFileInput"
+          class="d-none"
+          onchange="importData(event)"
+        />
+        <button
+          class="btn btn-outline-success"
+          onclick="document.getElementById('importFileInput').click()"
+          onmouseover="showTooltip('importTooltip')"
+          onmouseout="hideTooltip('importTooltip')"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/8765/8765164.png"
+            alt="Import Icon"
+            style="width: 20px; height: 20px"
+          />
+        </button>
+        <div id="importTooltip" class="tooltip-modal">
+          פעולה זו תייבא נתונים מקובץ JSON.
+        </div>
+      </div>
     </div>
     <div class="footer">
       <i class="fa-regular fa-copyright"></i> הוקם ע"י טל יעקב - מחלקת הנדסה
@@ -1505,6 +1567,76 @@
           otherReasonGroup.style.display =
             this.value === "אחר" ? "block" : "none";
         };
+      }
+
+      /*גיבוי המידע הקיים*/
+      function exportData() {
+        const data = {
+          tasks: tasks,
+          deletedTasks: deletedTasks,
+          alerts: alerts,
+        };
+        const dataStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "backup.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+      /*ייבוא המידע השמור האחרון*/
+      function importData(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const data = JSON.parse(e.target.result);
+            tasks = data.tasks || [];
+            deletedTasks = data.deletedTasks || [];
+            alerts = data.alerts || [];
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            localStorage.setItem("deletedTasks", JSON.stringify(deletedTasks));
+            localStorage.setItem("alerts", JSON.stringify(alerts));
+            renderTasks();
+            showToast("הנתונים יובאו בהצלחה!");
+          };
+          reader.readAsText(file);
+        }
+      }
+
+      /*תזמון כל 24 שעות לביצוע גיבוי המידע הקיים*/
+      function scheduleBackup() {
+        const now = new Date();
+        const targetHour = 2; // השעה שבה תרצה לבצע את הגיבוי (24 שעות)
+        const targetMinute = 0; // הדקה שבה תרצה לבצע את הגיבוי
+        const targetSecond = 0; // השנייה שבה תרצה לבצע את הגיבוי
+
+        const targetTime = new Date();
+        targetTime.setHours(targetHour, targetMinute, targetSecond, 0);
+
+        if (now > targetTime) {
+          targetTime.setDate(targetTime.getDate() + 1); // אם השעה כבר עברה היום, קבע למחר
+        }
+
+        const timeUntilBackup = targetTime - now;
+
+        setTimeout(() => {
+          exportData(); // ביצוע הגיבוי
+          setInterval(exportData, 24 * 60 * 60 * 1000); // קביעת גיבוי כל 24 שעות
+        }, timeUntilBackup);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        scheduleBackup(); // קריאה לפונקציה לקביעת גיבוי אוטומטי
+      });
+
+      function showTooltip(id) {
+        document.getElementById(id).style.display = "block";
+      }
+
+      function hideTooltip(id) {
+        document.getElementById(id).style.display = "none";
       }
     </script>
   </body>
