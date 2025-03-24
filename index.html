@@ -591,6 +591,10 @@
         margin-top: auto;
       }
 
+      .dark-mode .import-export .tooltip-modal {
+        color: black;
+      }
+
       .tooltip-modal {
         display: none;
         position: absolute;
@@ -1608,7 +1612,7 @@
       /*תזמון כל 24 שעות לביצוע גיבוי המידע הקיים*/
       function scheduleBackup() {
         const now = new Date();
-        const targetHour = 2; // השעה שבה תרצה לבצע את הגיבוי (24 שעות)
+        const targetHour = 18; // השעה שבה תרצה לבצע את הגיבוי (24 שעות)
         const targetMinute = 0; // הדקה שבה תרצה לבצע את הגיבוי
         const targetSecond = 0; // השנייה שבה תרצה לבצע את הגיבוי
 
