@@ -107,6 +107,20 @@
         display: flex;
         gap: 10px;
       }
+      .task-actions .btn {
+        flex: 0 0 auto;
+        width: auto;
+      }
+
+      .task-actions .dropdown {
+        flex: 0 0 auto;
+        text-align: center;
+      }
+
+      .task-actions .form-select {
+        width: auto;
+        flex: 0 0 auto;
+      }
       .task-controls {
         display: flex;
         flex-direction: column;
@@ -606,6 +620,28 @@
       .button-group:hover .tooltip-modal {
         display: block;
       }
+
+      /*History CSS*/
+
+      .modal-body {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #historyList .list-group-item {
+        margin-bottom: 10px; /* Adjust the value as needed */
+        border: 1px solid rgb(119, 119, 119);
+        border-radius: 5px;
+      }
+
+      #historySearchInput {
+        display: block;
+        width: 100%;
+        opacity: 1;
+        transition: none; /* Remove any transition effects */
+      }
     </style>
   </head>
   <body>
@@ -795,7 +831,7 @@
       <hr />
       <div class="button-group import-export mt-5 mb-0">
         <button
-          class="btn btn-outline-success"
+          class="btn btn-success"
           onclick="exportData()"
           onmouseover="showTooltip('exportTooltip')"
           onmouseout="hideTooltip('exportTooltip')"
@@ -817,7 +853,7 @@
           onchange="importData(event)"
         />
         <button
-          class="btn btn-outline-success"
+          class="btn btn-success"
           onclick="document.getElementById('importFileInput').click()"
           onmouseover="showTooltip('importTooltip')"
           onmouseout="hideTooltip('importTooltip')"
@@ -848,6 +884,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="historyModalLabel">היסטוריה</h5>
+            &nbsp;&nbsp;&nbsp;
             <button
               type="button"
               class="btn-close"
@@ -856,6 +893,18 @@
             ></button>
           </div>
           <div class="modal-body">
+            <div class="search-container w-50">
+              <button class="btn btn-secondary" onclick="toggleHistorySearch()">
+                <i class="fa fa-search"></i>
+              </button>
+              <input
+                type="text"
+                id="historySearchInput"
+                class="form-control"
+                placeholder="חפש משימות שהסתיימו"
+                oninput="filterHistoryTasks()"
+              />
+            </div>
             <ul id="historyList" class="list-group">
               <!-- פריטים יתווספו כאן -->
             </ul>
@@ -1161,78 +1210,104 @@
         taskAccordion.innerHTML = "";
         requestAccordion.innerHTML = "";
 
-        tasks.forEach((task) => {
+        // Sort tasks by priority
+        const sortedTasks = tasks.slice().sort((a, b) => {
+          const priorityOrder = { high: 1, medium: 2, low: 3 };
+          return priorityOrder[a.priority] - priorityOrder[b.priority];
+        });
+
+        sortedTasks.forEach((task) => {
           const taskItem = document.createElement("div");
           taskItem.className = `task-item priority-${task.priority}`;
           taskItem.innerHTML = `
-          <div class="accordion-button" onclick="toggleAccordion(${task.id})">
-            <div class="d-flex justify-content-between w-100">
-              <span>${task.text}</span>
-              <span class="info-icon">
-                <i class="fa-solid fa-calendar-days"></i>
-                <div class="info-content">
-                  <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
-                    task.startDate
-                  )}</span></p>
-                  <hr>
-                  <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
-                    task.endDate
-                  )}</span></p>
-                </div>
-              </span>
+      <div class="accordion-button" onclick="toggleAccordion(${task.id})">
+        <div class="d-flex justify-content-between w-100">
+          <span>${task.text}</span>
+          <span class="info-icon">
+            <i class="fa-solid fa-calendar-days"></i>
+            <div class="info-content">
+              <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
+                task.startDate
+              )}</span></p>
+              <hr>
+              <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
+                task.endDate
+              )}</span></p>
+            </div>
+          </span>
+        </div>
+      </div>
+      <div id="accordion-content-${task.id}" class="accordion-content">
+        <p class="task-description">${task.description}</p>
+        ${
+          task.comments
+            ? task.comments
+                .map(
+                  (comment) => `
+          <hr id="hr-${comment.id}">
+          <div id="comment-${comment.id}">
+            <p class="fw-bold">הערה (${comment.date}):</p> 
+            ${comment.text} 
+            <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
+              <i class="fa-solid fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `
+                )
+                .join("")
+            : ""
+        }
+        <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
+          <div class="d-flex">
+            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
+              task.id
+            })">ערוך כותרת</button>
+            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
+              task.id
+            })">ערוך תיאור</button>
+            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
+              task.id
+            })">הוסף הערה</button>
+            <div class="dropdown">
+              <button class="btn btn-light btn-sm dropdown-toggle me-2" type="button" id="priorityDropdown${
+                task.id
+              }" data-bs-toggle="dropdown" aria-expanded="false">
+                רמת חשיבות
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="priorityDropdown${
+                task.id
+              }">
+                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                  task.id
+                }, 'low')">נמוכה</a></li>
+                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                  task.id
+                }, 'medium')">בינונית</a></li>
+                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                  task.id
+                }, 'high')">גבוהה</a></li>
+              </ul>
             </div>
           </div>
-          <div id="accordion-content-${task.id}" class="accordion-content">
-            <p class="task-description">${task.description}</p>
-            ${
-              task.comments
-                ? task.comments
-                    .map(
-                      (comment) => `
-              <hr id="hr-${comment.id}">
-              <div id="comment-${comment.id}">
-                <p class="fw-bold">הערה (${comment.date}):</p> 
-                ${comment.text} 
-                <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
-                  <i class="fa-solid fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            `
-                    )
-                    .join("")
-                : ""
-            }
-            <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
-              <div class="d-flex">
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
-                  task.id
-                })">ערוך כותרת</button>
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
-                  task.id
-                })">ערוך תיאור</button>
-                <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
-                  task.id
-                })">הוסף הערה</button>
-              </div>
-              <select class="form-select form-select-sm w-25 me-2" onchange="changeTaskType(${
-                task.id
-              }, this.value)">
-                <option value="פניה" ${
-                  task.type === "פניה" ? "selected" : ""
-                }>פניה</option>
-                <option value="משימה" ${
-                  task.type === "משימה" ? "selected" : ""
-                }>משימה</option>
-              </select>
-              <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
-                task.id
-              })">בוצע</button>
-            </div>
-          </div>
-        `;
+          <select class="form-select form-select-sm w-25 me-2" onchange="changeTaskType(${
+            task.id
+          }, this.value)">
+            <option value="פניה" ${
+              task.type === "פניה" ? "selected" : ""
+            }>פניה</option>
+            <option value="משימה" ${
+              task.type === "משימה" ? "selected" : ""
+            }>משימה</option>
+          </select>
+          <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
+            task.id
+          })">בוצע</button>
+        </div>
+      </div>
+    `;
           if (task.type === "משימה") {
             taskAccordion.appendChild(taskItem);
           } else {
@@ -1240,7 +1315,6 @@
           }
         });
       }
-
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
         const button = content.previousElementSibling;
@@ -1259,28 +1333,28 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-          <div>
-            <strong><h4>${task.text}</h4></strong>
-            <p class="fw-bold m-0"><h5>תיאור: ${
-              task.description || "לא צוין"
-            }</h5></p>
-            <hr>
-            <p class="mb-0"><b>תאריך התחלה:</b> ${task.startDate}</p>
-            <p class="mb-0"><b>תאריך יעד סופי:</b> ${task.endDate}</p>
-            <p class="mb-0"><b>תאריך סיום:</b> ${
-              task.completionDate || "לא צוין"
-            }</p>
-            <p class="mb-0"><b>סיבת סיום:</b> ${
-              task.completionReason || "לא צוין"
-            }</p>
-            <button class="btn btn-primary btn-sm" onclick="restoreTask(${
-              task.id
-            })">שחזר</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${
-              task.id
-            })">מחק</button>
-          </div>
-        `;
+      <div>
+        <strong><h4>${task.text}</h4></strong>
+        <p class="fw-bold m-0"><h5>תיאור: ${
+          task.description || "לא צוין"
+        }</h5></p>
+        <hr>
+        <p class="mb-0"><b>תאריך התחלה:</b> ${task.startDate}</p>
+        <p class="mb-0"><b>תאריך יעד סופי:</b> ${task.endDate}</p>
+        <p class="mb-0"><b>תאריך סיום:</b> ${
+          task.completionDate || "לא צוין"
+        }</p>
+        <p class="mb-0"><b>סיבת סיום:</b> ${
+          task.completionReason || "לא צוין"
+        }</p>
+        <button class="btn btn-primary btn-sm" onclick="restoreTask(${
+          task.id
+        })">שחזר</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${
+          task.id
+        })">מחק</button>
+      </div>
+    `;
           historyList.appendChild(listItem);
         });
         // הצגת ה-Modal
@@ -1288,6 +1362,28 @@
           document.getElementById("historyModal")
         );
         historyModal.show();
+      }
+
+      function toggleHistorySearch() {
+        const searchInput = document.getElementById("historySearchInput");
+        searchInput.classList.toggle("show");
+      }
+
+      function filterHistoryTasks() {
+        const searchInput = document
+          .getElementById("historySearchInput")
+          .value.toLowerCase();
+        const tasks = document.querySelectorAll(
+          "#historyList .list-group-item"
+        );
+        tasks.forEach((task) => {
+          const taskText = task.innerText.toLowerCase();
+          if (taskText.includes(searchInput)) {
+            task.style.display = "block";
+          } else {
+            task.style.display = "none";
+          }
+        });
       }
 
       function showAlerts() {
@@ -1612,6 +1708,15 @@
           };
           reader.readAsText(file);
         }
+      }
+
+      /*שינוי רמת חשיבות לפניה/משימה*/
+      function changeTaskPriority(id, newPriority) {
+        tasks = tasks.map((task) =>
+          task.id === id ? { ...task, priority: newPriority } : task
+        );
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
       }
     </script>
   </body>
