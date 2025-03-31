@@ -1130,6 +1130,7 @@
             comments: [],
             completionDate: null,
             urgent: isUrgent, // הוספת שדה דחוף
+            isNearDeadline: false, // שדה חדש לבדיקת תאריך יעד
           };
           tasks.push(task);
           localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -1230,7 +1231,10 @@
         });
         sortedTasks.forEach((task) => {
           const taskItem = document.createElement("div");
-          taskItem.className = `task-item priority-${task.priority}`;
+          const nearDeadlineClass = task.isNearDeadline
+            ? `near-deadline-${task.priority}`
+            : "";
+          taskItem.className = `task-item priority-${task.priority} ${nearDeadlineClass}`;
           taskItem.innerHTML = `
       <div class="accordion-button" onclick="toggleAccordion(${task.id})">
         <div class="d-flex justify-content-between w-100">
@@ -1354,8 +1358,38 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
+
+  .near-deadline-high {
+    animation: soft-blink-high 2s infinite;
+  }
+
+  @keyframes soft-blink-high {
+    0%, 100% { background-color: #f8d7da; }
+    50% { background-color: #dc3545; }
+  }
+
+  .near-deadline-medium {
+    animation: soft-blink-medium 2s infinite;
+  }
+
+  @keyframes soft-blink-medium {
+    0%, 100% { background-color: #fff3cd; }
+    50% { background-color: #ffc107; }
+  }
+
+  .near-deadline-low {
+    animation: soft-blink-low 2s infinite;
+  }
+
+  @keyframes soft-blink-low {
+    0%, 100% { background-color: #d4edda; }
+    50% { background-color: #28a745; }
+  }
 `;
       document.head.appendChild(style);
+
+      // קריאה לפונקציה לבדיקת תאריכי יעד כל דקה
+      setInterval(checkDeadlines, 60000);
 
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
@@ -1476,11 +1510,15 @@
         tasks.forEach((task) => {
           const deadline = new Date(task.endDate);
           const timeDifference = deadline - now;
-          if (timeDifference <= 300000 && timeDifference > 0) {
-            // 5 דקות
-            showDeadlineAlert(task.text, task.endDate);
+          if (timeDifference <= 86400000 && timeDifference > 0) {
+            // 24 שעות
+            task.isNearDeadline = true;
+          } else {
+            task.isNearDeadline = false;
           }
         });
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
       }
 
       document.addEventListener("DOMContentLoaded", () => {
