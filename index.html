@@ -773,6 +773,10 @@
             <option value="request">פניה</option>
           </select>
         </div>
+        <div>
+          <label for="urgent" class="form-label">דחוף</label>
+          <input type="checkbox" id="urgent" name="urgent" />
+        </div>
       </div>
       <div class="form-group mb-3 description-group">
         <label for="description" class="form-label">תיאור</label>
@@ -1105,12 +1109,15 @@
         const priorityInput = document.getElementById("priority");
         const taskTypeInput = document.getElementById("taskType");
         const descriptionInput = document.getElementById("description");
+        const urgentInput = document.getElementById("urgent");
         const newTaskText = newTaskInput.value.trim();
         const startDate = startDateInput.value;
         const endDate = endDateInput.value;
         const priority = priorityInput.value;
         const taskType = taskTypeInput.value;
         const description = descriptionInput.value.trim();
+        const isUrgent = urgentInput.checked;
+
         if (newTaskText && startDate && taskType) {
           const task = {
             id: Date.now(),
@@ -1121,7 +1128,8 @@
             description: description,
             type: taskType === "task" ? "משימה" : "פניה",
             comments: [],
-            completionDate: null, // שדה חדש לתאריך סיום
+            completionDate: null,
+            urgent: isUrgent, // הוספת שדה דחוף
           };
           tasks.push(task);
           localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -1133,6 +1141,7 @@
           priorityInput.value = "low";
           taskTypeInput.value = "";
           descriptionInput.value = "";
+          urgentInput.checked = false;
           toggleDescription();
           renderTasks();
           showToast("הפניה/משימה נוספה בהצלחה!");
@@ -1215,13 +1224,10 @@
         const requestAccordion = document.getElementById("requestAccordion");
         taskAccordion.innerHTML = "";
         requestAccordion.innerHTML = "";
-
-        // Sort tasks by priority
         const sortedTasks = tasks.slice().sort((a, b) => {
           const priorityOrder = { high: 1, medium: 2, low: 3 };
           return priorityOrder[a.priority] - priorityOrder[b.priority];
         });
-
         sortedTasks.forEach((task) => {
           const taskItem = document.createElement("div");
           taskItem.className = `task-item priority-${task.priority}`;
@@ -1230,6 +1236,8 @@
         <div class="d-flex justify-content-between w-100">
           <span>${task.text}</span>
           <span class="info-icon">
+             ${task.urgent ? '<span class="urgent-dot"></span>' : ""}
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <i class="fa-solid fa-calendar-days"></i>
             <div class="info-content">
               <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
@@ -1242,6 +1250,7 @@
             </div>
           </span>
         </div>
+       
       </div>
       <div id="accordion-content-${task.id}" class="accordion-content">
         <p class="task-description">${task.description}</p>
@@ -1298,21 +1307,23 @@
               </ul>
             </div>
           </div>
-         <div class="dropdown">
-  <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
-    task.id
-  }" data-bs-toggle="dropdown" aria-expanded="false">
-    סיווג
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${task.id}">
-    <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-      task.id
-    }, 'פניה')">פניה</a></li>
-    <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-      task.id
-    }, 'משימה')">משימה</a></li>
-  </ul>
-</div>
+          <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
+              task.id
+            }" data-bs-toggle="dropdown" aria-expanded="false">
+              סיווג
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${
+              task.id
+            }">
+              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
+                task.id
+              }, 'פניה')">פניה</a></li>
+              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
+                task.id
+              }, 'משימה')">משימה</a></li>
+            </ul>
+          </div>
           <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
             task.id
           })">סיום</button>
@@ -1326,6 +1337,26 @@
           }
         });
       }
+      const style = document.createElement("style");
+      style.innerHTML = `
+  .urgent-dot {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+`;
+      document.head.appendChild(style);
+
       function toggleAccordion(id) {
         const content = document.getElementById(`accordion-content-${id}`);
         const button = content.previousElementSibling;
