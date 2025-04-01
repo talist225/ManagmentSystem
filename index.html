@@ -1236,104 +1236,108 @@
             : "";
           taskItem.className = `task-item priority-${task.priority} ${nearDeadlineClass}`;
           taskItem.innerHTML = `
-      <div class="accordion-button" onclick="toggleAccordion(${task.id})">
-        <div class="d-flex justify-content-between w-100">
-          <span>${task.text}</span>
-          <span class="info-icon">
-             ${task.urgent ? '<span class="urgent-dot"></span>' : ""}
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <i class="fa-solid fa-calendar-days"></i>
-            <div class="info-content">
-              <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
-                task.startDate
-              )}</span></p>
-              <hr>
-              <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
-                task.endDate
-              )}</span></p>
-            </div>
-          </span>
-        </div>
-       
-      </div>
-      <div id="accordion-content-${task.id}" class="accordion-content">
-        <p class="task-description">${task.description}</p>
-        ${
-          task.comments
-            ? task.comments
-                .map(
-                  (comment) => `
-          <hr id="hr-${comment.id}">
-          <div id="comment-${comment.id}">
-            <p class="fw-bold">הערה (${comment.date}):</p> 
-            ${comment.text} 
-            <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
-              <i class="fa-solid fa-edit"></i>
-            </button>
-            <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+        <div class="accordion-button" onclick="toggleAccordion(${task.id})">
+          <div class="d-flex justify-content-between w-100">
+            <span>${task.text}</span>
+            <span class="info-icon">
+              ${task.urgent ? '<span class="urgent-dot"></span>' : ""}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <i class="fa-solid fa-calendar-days"></i>
+              <div class="info-content">
+                <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
+                  task.startDate
+                )}</span></p>
+                <hr>
+                <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
+                  task.endDate
+                )}</span></p>
+              </div>
+            </span>
           </div>
-        `
-                )
-                .join("")
-            : ""
-        }
-        <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
-          <div class="d-flex">
-            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
-              task.id
-            })">ערוך כותרת</button>
-            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
-              task.id
-            })">ערוך תיאור</button>
-            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
-              task.id
-            })">הוסף הערה</button>
+        </div>
+        <div id="accordion-content-${task.id}" class="accordion-content">
+          <p class="task-description">${task.description}</p>
+          ${
+            task.comments
+              ? task.comments
+                  .map(
+                    (comment) => `
+            <hr id="hr-${comment.id}">
+            <div id="comment-${comment.id}">
+              <p class="fw-bold">הערה (${comment.date}):</p> 
+              ${comment.text} 
+              <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
+                <i class="fa-solid fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          `
+                  )
+                  .join("")
+              : ""
+          }
+          <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
+            <div class="d-flex">
+              <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
+                task.id
+              })">ערוך כותרת</button>
+              <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
+                task.id
+              })">ערוך תיאור</button>
+              <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
+                task.id
+              })">הוסף הערה</button>
+              <div class="dropdown">
+                <button class="btn btn-light btn-sm dropdown-toggle me-2" type="button" id="priorityDropdown${
+                  task.id
+                }" data-bs-toggle="dropdown" aria-expanded="false">
+                  רמת חשיבות
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="priorityDropdown${
+                  task.id
+                }">
+                  <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                    task.id
+                  }, 'low')">נמוכה</a></li>
+                  <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                    task.id
+                  }, 'medium')">בינונית</a></li>
+                  <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                    task.id
+                  }, 'high')">גבוהה</a></li>
+                </ul>
+              </div>
+            </div>
             <div class="dropdown">
-              <button class="btn btn-light btn-sm dropdown-toggle me-2" type="button" id="priorityDropdown${
+              <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
                 task.id
               }" data-bs-toggle="dropdown" aria-expanded="false">
-                רמת חשיבות
+                סיווג
               </button>
-              <ul class="dropdown-menu" aria-labelledby="priorityDropdown${
+              <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${
                 task.id
               }">
-                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
                   task.id
-                }, 'low')">נמוכה</a></li>
-                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                }, 'פניה')">פניה</a></li>
+                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
                   task.id
-                }, 'medium')">בינונית</a></li>
-                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
-                  task.id
-                }, 'high')">גבוהה</a></li>
+                }, 'משימה')">משימה</a></li>
               </ul>
             </div>
-          </div>
-          <div class="dropdown">
-            <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
+            ${
+              task.endDate && task.endDate !== "לא צוין"
+                ? `<button class="btn btn-danger btn-sm fw-bold" onclick="stopBlink(${task.id})">כבה הבהוב</button>`
+                : ""
+            }
+            <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
               task.id
-            }" data-bs-toggle="dropdown" aria-expanded="false">
-              סיווג
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${
-              task.id
-            }">
-              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-                task.id
-              }, 'פניה')">פניה</a></li>
-              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-                task.id
-              }, 'משימה')">משימה</a></li>
-            </ul>
+            })">סיום</button>
           </div>
-          <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
-            task.id
-          })">סיום</button>
         </div>
-      </div>
-    `;
+      `;
           if (task.type === "משימה") {
             taskAccordion.appendChild(taskItem);
           } else {
@@ -1341,6 +1345,30 @@
           }
         });
       }
+
+      function stopBlink(id) {
+        const task = tasks.find((task) => task.id === id);
+        task.isNearDeadline = false;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
+      }
+
+      function checkDeadlines() {
+        const now = new Date();
+        tasks.forEach((task) => {
+          const deadline = new Date(task.endDate);
+          const timeDifference = deadline - now;
+          if (timeDifference <= 86400000 && timeDifference > 0) {
+            // 24 שעות
+            task.isNearDeadline = true;
+          } else {
+            task.isNearDeadline = false;
+          }
+        });
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        renderTasks();
+      }
+
       const style = document.createElement("style");
       style.innerHTML = `
   .urgent-dot {
@@ -1503,22 +1531,6 @@
         setTimeout(() => {
           toast.className = toast.className.replace("show", "");
         }, 3000);
-      }
-
-      function checkDeadlines() {
-        const now = new Date();
-        tasks.forEach((task) => {
-          const deadline = new Date(task.endDate);
-          const timeDifference = deadline - now;
-          if (timeDifference <= 86400000 && timeDifference > 0) {
-            // 24 שעות
-            task.isNearDeadline = true;
-          } else {
-            task.isNearDeadline = false;
-          }
-        });
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-        renderTasks();
       }
 
       document.addEventListener("DOMContentLoaded", () => {
