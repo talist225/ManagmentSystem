@@ -852,14 +852,13 @@
           >
             היסטוריית התראות
           </button>
-
           <!-- כפתור לפתיחת לוח השנה -->
           <button
             class="btn btn-primary position-relative"
             data-bs-toggle="modal"
             data-bs-target="#calendarModal"
           >
-            <i class="fa fa-calendar-days"></i> לוח שנה
+            <i class="fa fa-calendar"></i> לוח שנה
             <span
               id="eventCountBadge"
               class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -881,7 +880,6 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="calendarModalLabel">לוח שנה</h5>
-                  &nbsp;&nbsp;&nbsp;
                   <button
                     type="button"
                     class="btn-close"
@@ -1010,7 +1008,13 @@
             id="alert"
             class="alert alert-warning alert-dismissible fade show"
             role="alert"
-            style="display: none"
+            style="
+              display: none;
+              position: fixed;
+              top: 10px;
+              right: 10px;
+              z-index: 1050;
+            "
           >
             <strong>תזכורת:</strong> יש לך משימה/פגישה קרובה.
             <button
@@ -1440,116 +1444,118 @@
             : "";
           taskItem.className = `task-item priority-${task.priority} ${nearDeadlineClass}`;
           taskItem.innerHTML = `
-                      <div class="accordion-button" onclick="toggleAccordion(${
-                        task.id
-                      })">
-                        <div class="d-flex justify-content-between w-100">
-                          <span>${task.text}</span>
-                          <span class="info-icon">
-                            ${
-                              task.urgent
-                                ? '<span class="urgent-dot"></span>'
-                                : ""
-                            }
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <div class="info-content">
-                              <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
-                                task.startDate
-                              )}</span></p>
-                              <hr>
-                              <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
-                                task.endDate
-                              )}</span></p>
-                            </div>
-                          </span>
-                        </div>
-                      </div>
-                      <div id="accordion-content-${
-                        task.id
-                      }" class="accordion-content">
-                        <p class="task-description">${task.description}</p>
-                        ${
-                          task.comments
-                            ? task.comments
-                                .map(
-                                  (comment) => `
-                          <hr id="hr-${comment.id}">
-                          <div id="comment-${comment.id}">
-                            <p class="fw-bold">הערה (${comment.date}):</p>
-                            ${comment.text}
-                            <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
-                              <i class="fa-solid fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
-                              <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                          </div>
-                        `
-                                )
-                                .join("")
-                            : ""
-                        }
-                        <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
-                          <div class="d-flex">
-                            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
-                              task.id
-                            })">ערוך כותרת</button>
-                            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
-                              task.id
-                            })">ערוך תיאור</button>
-                            <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
-                              task.id
-                            })">הוסף הערה</button>
-                            <div class="dropdown">
-                              <button class="btn btn-light btn-sm dropdown-toggle me-2" type="button" id="priorityDropdown${
+                              <div class="accordion-button" onclick="toggleAccordion(${
                                 task.id
-                              }" data-bs-toggle="dropdown" aria-expanded="false">
-                                רמת חשיבות
-                              </button>
-                              <ul class="dropdown-menu" aria-labelledby="priorityDropdown${
+                              })">
+                                <div class="d-flex justify-content-between w-100">
+                                  <span>${task.text}</span>
+                                  <span class="info-icon">
+                                    ${
+                                      task.urgent
+                                        ? '<span class="urgent-dot"></span>'
+                                        : ""
+                                    }
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                    <div class="info-content">
+                                      <p>תאריך התחלה: <span class="formatted-start-date">${formatDateTime(
+                                        task.startDate
+                                      )}</span></p>
+                                      <hr>
+                                      <p>תאריך יעד סופי: <span class="formatted-end-date">${formatDateTime(
+                                        task.endDate
+                                      )}</span></p>
+                                    </div>
+                                  </span>
+                                </div>
+                              </div>
+                              <div id="accordion-content-${
                                 task.id
-                              }">
-                                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
-                                  task.id
-                                }, 'low')">נמוכה</a></li>
-                                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
-                                  task.id
-                                }, 'medium')">בינונית</a></li>
-                                <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
-                                  task.id
-                                }, 'high')">גבוהה</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                          <div class="dropdown">
-                            <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
-                              task.id
-                            }" data-bs-toggle="dropdown" aria-expanded="false">
-                              סיווג
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${
-                              task.id
-                            }">
-                              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-                                task.id
-                              }, 'פניה')">פניה</a></li>
-                              <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
-                                task.id
-                              }, 'משימה')">משימה</a></li>
-                            </ul>
-                          </div>
-                          ${
-                            task.endDate && task.endDate !== "לא צוין"
-                              ? `<button class="btn btn-danger btn-sm fw-bold" onclick="stopBlink(${task.id})">כבה הבהוב</button>`
-                              : ""
-                          }
-                          <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
-                            task.id
-                          })">סיום</button>
-                        </div>
-                      </div>
-                    `;
+                              }" class="accordion-content">
+                                <p class="task-description">${
+                                  task.description
+                                }</p>
+                                ${
+                                  task.comments
+                                    ? task.comments
+                                        .map(
+                                          (comment) => `
+                                  <hr id="hr-${comment.id}">
+                                  <div id="comment-${comment.id}">
+                                    <p class="fw-bold">הערה (${comment.date}):</p>
+                                    ${comment.text}
+                                    <button class="btn btn-sm btn-primary" onclick="editComment(${task.id}, ${comment.id})">
+                                      <i class="fa-solid fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteComment(${task.id}, ${comment.id})">
+                                      <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                  </div>
+                                `
+                                        )
+                                        .join("")
+                                    : ""
+                                }
+                                <div class="task-actions d-flex justify-content-between align-items-center mb-2 mt-2">
+                                  <div class="d-flex">
+                                    <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editTask(${
+                                      task.id
+                                    })">ערוך כותרת</button>
+                                    <button class="btn btn-light btn-sm me-2 fw-bold" onclick="editDescription(${
+                                      task.id
+                                    })">ערוך תיאור</button>
+                                    <button class="btn btn-light btn-sm me-2 fw-bold" onclick="addComment(${
+                                      task.id
+                                    })">הוסף הערה</button>
+                                    <div class="dropdown">
+                                      <button class="btn btn-light btn-sm dropdown-toggle me-2" type="button" id="priorityDropdown${
+                                        task.id
+                                      }" data-bs-toggle="dropdown" aria-expanded="false">
+                                        רמת חשיבות
+                                      </button>
+                                      <ul class="dropdown-menu" aria-labelledby="priorityDropdown${
+                                        task.id
+                                      }">
+                                        <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                                          task.id
+                                        }, 'low')">נמוכה</a></li>
+                                        <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                                          task.id
+                                        }, 'medium')">בינונית</a></li>
+                                        <li><a class="dropdown-item text-center" href="#" onclick="changeTaskPriority(${
+                                          task.id
+                                        }, 'high')">גבוהה</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle me-2 classification" type="button" id="taskTypeDropdown${
+                                      task.id
+                                    }" data-bs-toggle="dropdown" aria-expanded="false">
+                                      סיווג
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="taskTypeDropdown${
+                                      task.id
+                                    }">
+                                      <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
+                                        task.id
+                                      }, 'פניה')">פניה</a></li>
+                                      <li><a class="dropdown-item text-center" href="#" onclick="changeTaskType(${
+                                        task.id
+                                      }, 'משימה')">משימה</a></li>
+                                    </ul>
+                                  </div>
+                                  ${
+                                    task.endDate && task.endDate !== "לא צוין"
+                                      ? `<button class="btn btn-danger btn-sm fw-bold" onclick="stopBlink(${task.id})">כבה הבהוב</button>`
+                                      : ""
+                                  }
+                                  <button class="btn btn-success btn-sm fw-bold" onclick="showCompletionReasonModal(${
+                                    task.id
+                                  })">סיום</button>
+                                </div>
+                              </div>
+                            `;
           if (task.type === "משימה") {
             taskAccordion.appendChild(taskItem);
           } else {
@@ -1583,49 +1589,49 @@
 
       const style = document.createElement("style");
       style.innerHTML = `
-                .urgent-dot {
-                  width: 10px;
-                  height: 10px;
-                  background-color: red;
-                  border-radius: 50%;
-                  animation: blink 1s infinite;
-                  position: absolute;
-                  top: 10px;
-                  right: 10px;
-                }
+                        .urgent-dot {
+                          width: 10px;
+                          height: 10px;
+                          background-color: red;
+                          border-radius: 50%;
+                          animation: blink 1s infinite;
+                          position: absolute;
+                          top: 10px;
+                          right: 10px;
+                        }
 
-                @keyframes blink {
-                  0%, 100% { opacity: 1; }
-                  50% { opacity: 0; }
-                }
+                        @keyframes blink {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0; }
+                        }
 
-                .near-deadline-high {
-                  animation: soft-blink-high 2s infinite;
-                }
+                        .near-deadline-high {
+                          animation: soft-blink-high 2s infinite;
+                        }
 
-                @keyframes soft-blink-high {
-                  0%, 100% { background-color: #f8d7da; }
-                  50% { background-color: #dc3545; }
-                }
+                        @keyframes soft-blink-high {
+                          0%, 100% { background-color: #f8d7da; }
+                          50% { background-color: #dc3545; }
+                        }
 
-                .near-deadline-medium {
-                  animation: soft-blink-medium 2s infinite;
-                }
+                        .near-deadline-medium {
+                          animation: soft-blink-medium 2s infinite;
+                        }
 
-                @keyframes soft-blink-medium {
-                  0%, 100% { background-color: #fff3cd; }
-                  50% { background-color: #ffc107; }
-                }
+                        @keyframes soft-blink-medium {
+                          0%, 100% { background-color: #fff3cd; }
+                          50% { background-color: #ffc107; }
+                        }
 
-                .near-deadline-low {
-                  animation: soft-blink-low 2s infinite;
-                }
+                        .near-deadline-low {
+                          animation: soft-blink-low 2s infinite;
+                        }
 
-                @keyframes soft-blink-low {
-                  0%, 100% { background-color: #d4edda; }
-                  50% { background-color: #28a745; }
-                }
-              `;
+                        @keyframes soft-blink-low {
+                          0%, 100% { background-color: #d4edda; }
+                          50% { background-color: #28a745; }
+                        }
+                      `;
       document.head.appendChild(style);
 
       // קריאה לפונקציה לבדיקת תאריכי יעד כל דקה
@@ -1649,28 +1655,32 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-                    <div>
-                      <strong><h4>${task.text}</h4></strong>
-                      <p class="fw-bold m-0"><h5>תיאור: ${
-                        task.description || "לא צוין"
-                      }</h5></p>
-                      <hr>
-                      <p class="mb-0"><b>תאריך התחלה:</b> ${task.startDate}</p>
-                      <p class="mb-0"><b>תאריך יעד סופי:</b> ${task.endDate}</p>
-                      <p class="mb-0"><b>תאריך סיום:</b> ${
-                        task.completionDate || "לא צוין"
-                      }</p>
-                      <p class="mb-0"><b>סיבת סיום:</b> ${
-                        task.completionReason || "לא צוין"
-                      }</p>
-                      <button class="btn btn-primary btn-sm" onclick="restoreTask(${
-                        task.id
-                      })">שחזר</button>
-                      <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${
-                        task.id
-                      })">מחק</button>
-                    </div>
-                  `;
+                            <div>
+                              <strong><h4>${task.text}</h4></strong>
+                              <p class="fw-bold m-0"><h5>תיאור: ${
+                                task.description || "לא צוין"
+                              }</h5></p>
+                              <hr>
+                              <p class="mb-0"><b>תאריך התחלה:</b> ${
+                                task.startDate
+                              }</p>
+                              <p class="mb-0"><b>תאריך יעד סופי:</b> ${
+                                task.endDate
+                              }</p>
+                              <p class="mb-0"><b>תאריך סיום:</b> ${
+                                task.completionDate || "לא צוין"
+                              }</p>
+                              <p class="mb-0"><b>סיבת סיום:</b> ${
+                                task.completionReason || "לא צוין"
+                              }</p>
+                              <button class="btn btn-primary btn-sm" onclick="restoreTask(${
+                                task.id
+                              })">שחזר</button>
+                              <button class="btn btn-danger btn-sm" onclick="deleteTaskFromHistory(${
+                                task.id
+                              })">מחק</button>
+                            </div>
+                          `;
           historyList.appendChild(listItem);
         });
         // הצגת ה-Modal
@@ -1710,12 +1720,12 @@
           const listItem = document.createElement("li");
           listItem.className = "list-group-item";
           listItem.innerHTML = `
-                    <div>
-                      <strong>${alert.text}</strong>
-                      <p>תאריך יעד סופי: ${endDate}</p>
-                      <button class="btn btn-danger btn-sm" onclick="deleteAlert(${index})">מחק</button>
-                    </div>
-                  `;
+                            <div>
+                              <strong>${alert.text}</strong>
+                              <p>תאריך יעד סופי: ${endDate}</p>
+                              <button class="btn btn-danger btn-sm" onclick="deleteAlert(${index})">מחק</button>
+                            </div>
+                          `;
           alertsList.appendChild(listItem);
         });
         const alertsModal = new bootstrap.Modal(
@@ -2042,7 +2052,10 @@
               document.getElementById("addEventModal")
             );
             var addEventForm = document.getElementById("addEventForm");
-            addEventForm.date = info.dateStr; // שמירת התאריך להוספה
+            var localDateTime = new Date(info.dateStr)
+              .toISOString()
+              .slice(0, 16); // סימון אוטומטי של התאריך והשעה
+            document.getElementById("newEventDate").value = localDateTime;
             addEventModal.show();
           },
           eventClick: function (info) {
@@ -2052,8 +2065,10 @@
             var editEventForm = document.getElementById("editEventForm");
             editEventForm.event = info.event; // שמירת האירוע לעריכה
             document.getElementById("eventTitle").value = info.event.title;
-            document.getElementById("eventDate").value = info.event.start
-              .toISOString()
+            document.getElementById("eventDate").value = new Date(
+              info.event.start
+            )
+              .toLocaleString("sv-SE", { timeZoneName: "short" })
               .slice(0, 16);
             editEventModal.show();
           },
@@ -2107,8 +2122,9 @@
             var eventDate = new Date(event.start);
             if (
               eventDate <= now &&
-              eventDate >= new Date(now.getTime() - 60000)
+              eventDate >= new Date(now.getTime() - 1800000)
             ) {
+              // חצי שעה לפני התאריך ושעת היעד
               showAlert();
             }
           });
@@ -2125,8 +2141,8 @@
             if (title && date) {
               var newEvent = {
                 title: title,
-                start: date,
-                allDay: true,
+                start: new Date(date).toISOString(), // שמירת השעה המדויקת
+                allDay: false,
               };
               calendar.addEvent(newEvent);
               saveEventsToLocalStorage(calendar.getEvents());
@@ -2147,7 +2163,7 @@
             var newDate = document.getElementById("eventDate").value;
             if (newTitle && newDate) {
               event.setProp("title", newTitle);
-              event.setStart(newDate);
+              event.setStart(new Date(newDate).toISOString()); // שמירת השעה המדויקת
               saveEventsToLocalStorage(calendar.getEvents());
               var editEventModal = bootstrap.Modal.getInstance(
                 document.getElementById("editEventModal")
